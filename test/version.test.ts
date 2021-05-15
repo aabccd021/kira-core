@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 
-import { VERSION } from '../src/schema';
+import { VERSION } from '../src/util';
 
 describe('schema type version', () => {
   it('has same version as package', () => {

@@ -1,4 +1,4 @@
-type Dictionary<T> = Record<string, T>;
+import { Dictionary } from './util';
 
 export type StringField = {
   readonly type: 'string';
