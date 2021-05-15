@@ -12,6 +12,8 @@ export type Dictionary<T> = Record<string, T>;
 export const VERSION = ['0.3.4'] as const;
 type Version = typeof VERSION[number];
 
+export type Schema = Schema_1 | Schema_2 | Schema_3 | Schema_4;
+
 // 1
 export type Field_1 =
   | CountField
