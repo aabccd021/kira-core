@@ -9,7 +9,7 @@ import {
 
 export type Dictionary<T> = Record<string, T>;
 
-export const VERSION = '0.3.6';
+export const VERSION = '0.3.7';
 type Version = typeof VERSION;
 
 export type Schema = Schema_1 | Schema_2 | Schema_3 | Schema_4;
