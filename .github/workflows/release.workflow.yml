@@ -18,6 +18,12 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      - name: Cache build output
+        id: cache-build
+        uses: actions/cache@v2
+        with:
+          path: lib
+          key: ${{ runner.os }}-build
       - uses: actions/setup-node@v2
       - run: yarn install --frozen-lockfile
       - run: yarn build
@@ -38,9 +44,13 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      - name: Cache build output
+        id: cache-build
+        uses: actions/cache@v2
+        with:
+          path: lib
+          key: ${{ runner.os }}-build
       - uses: actions/setup-node@v2
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
