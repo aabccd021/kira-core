@@ -1,3 +1,4 @@
+name: Test and Release
 on:
   push:
     branches:
