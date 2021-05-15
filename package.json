@@ -1,10 +1,13 @@
 {
   "name": "kira-core",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "main": "lib/index.js",
   "repository": "git@github.com:aabccd021/kira-core.git",
   "author": "aabccd021 <aabccd021@gmail.com>",
   "license": "MIT",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "tsc --build tsconfig.build.json",
     "lint": "eslint . --ext ts",

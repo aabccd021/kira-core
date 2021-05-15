@@ -9,7 +9,7 @@ import {
 
 export type Dictionary<T> = Record<string, T>;
 
-export const VERSION = ['0.1.0'] as const;
+export const VERSION = ['0.3.0'] as const;
 type Version = typeof VERSION[number];
 
 // 1
