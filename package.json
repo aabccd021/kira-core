@@ -1,16 +1,22 @@
 {
   "name": "kira-core",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "repository": "git@github.com:aabccd021/kira-core.git",
   "author": "aabccd021 <aabccd021@gmail.com>",
   "license": "MIT",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "exports": {
+    ".": {
+      "node": "./dist/cjs/index.js",
+      "default": "./dist/mjs/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsc --build tsconfig.build.json",
+    "build": "rm -rf dist && tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
     "lint": "eslint . --ext ts",
     "test": "jest --coverage"
   },
