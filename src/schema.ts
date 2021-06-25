@@ -1,51 +1,44 @@
-import {
-  CountField,
-  CreationTimeField,
-  ImageField,
-  OwnerField,
-  RefField,
-  StringField,
-} from './field';
 import { Dictionary, Version } from './util';
 
-export type Schema = Schema_1 | Schema_2 | Schema_3 | Schema_4;
-
-// 1
-export type Field_1 =
-  | CountField
-  | CreationTimeField
-  | ImageField
-  | OwnerField
-  | RefField
-  | StringField;
-
-export type Schema_1 = {
+export type Schema = {
   readonly version: Version;
-  readonly userCol: string;
-  readonly cols: Dictionary<Dictionary<Field_1>>;
+  readonly userCol?: string;
+  readonly cols: Dictionary<Dictionary<SchemaField>>;
 };
 
-// 2
-export type Field_2 = CountField | CreationTimeField | ImageField | RefField | StringField;
+export type SchemaField =
+  | CountSchemaField
+  | CreationTimeSchemaField
+  | ImageSchemaField
+  | OwnerSchemaField
+  | RefSchemaField
+  | StringSchemaField;
 
-export type Schema_2 = {
-  readonly version: Version;
-  readonly cols: Dictionary<Dictionary<Field_2>>;
+export type CountSchemaField = {
+  readonly type: 'count';
+  readonly countedCol: string;
+  readonly groupByRef: string;
 };
 
-// 3
-export type Field_3 = CountField | CreationTimeField | OwnerField | RefField | StringField;
-
-export type Schema_3 = {
-  readonly version: Version;
-  readonly userCol: string;
-  readonly cols: Dictionary<Dictionary<Field_3>>;
+export type CreationTimeSchemaField = {
+  readonly type: 'creationTime';
 };
 
-// 4
-export type Field_4 = CountField | CreationTimeField | RefField | StringField;
+export type ImageSchemaField = {
+  readonly type: 'image';
+};
 
-export type Schema_4 = {
-  readonly version: Version;
-  readonly cols: Dictionary<Dictionary<Field_4>>;
+export type OwnerSchemaField = {
+  readonly type: 'owner';
+  readonly syncFields?: Dictionary<true>;
+};
+
+export type RefSchemaField = {
+  readonly type: 'ref';
+  readonly refCol: string;
+  readonly syncFields?: Dictionary<true>;
+};
+
+export type StringSchemaField = {
+  readonly type: 'string';
 };
