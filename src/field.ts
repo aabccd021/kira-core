@@ -8,7 +8,7 @@ export type ThisColRefer = {
     readonly name: string;
     readonly syncFields: SyncFields;
   }[];
-  readonly thisColRefer: readonly ThisColRefer[];
+  readonly thisColRefers: readonly ThisColRefer[];
 };
 
 export type Field = CountField | CreationTimeField | ImageField | RefField | StringField;
@@ -32,7 +32,7 @@ export type RefField = {
   readonly isOwner: boolean;
   readonly refedCol: string;
   readonly syncFields: SyncFields;
-  readonly thisColRefer: readonly ThisColRefer[];
+  readonly thisColRefers: readonly ThisColRefer[];
 };
 
 export type StringField = {
