@@ -1,5 +1,15 @@
-import { ThisColReferFields } from './field-types';
 import { Dictionary } from './util';
+
+export type SyncFields = Dictionary<RefField | true>;
+
+export type ThisColRefer = {
+  readonly colName: string;
+  readonly fields: readonly {
+    readonly name: string;
+    readonly syncFields: SyncFields;
+  }[];
+  readonly thisColRefer: readonly ThisColRefer[];
+};
 
 export type Field = CountField | CreationTimeField | ImageField | RefField | StringField;
 
@@ -21,8 +31,8 @@ export type RefField = {
   readonly type: 'ref';
   readonly isOwner: boolean;
   readonly refedCol: string;
-  readonly syncFields: Dictionary<RefField | true>;
-  readonly thisColReferFields: ThisColReferFields;
+  readonly syncFields: SyncFields;
+  readonly thisColRefer: readonly ThisColRefer[];
 };
 
 export type StringField = {
