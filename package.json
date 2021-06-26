@@ -28,6 +28,7 @@
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-filenames": "^1.3.2",
+    "eslint-plugin-functional": "^3.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-no-null": "^1.0.2",
@@ -48,6 +49,7 @@
     "parser": "@typescript-eslint/parser",
     "plugins": [
       "@typescript-eslint",
+      "functional",
       "import",
       "jest",
       "no-null",
@@ -58,6 +60,7 @@
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended",
+      "plugin:functional/all",
       "plugin:import/errors",
       "plugin:import/typescript",
       "plugin:import/warnings",
@@ -68,6 +71,17 @@
     ],
     "ignorePatterns": [
       "lib/**"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "test/**/*.ts"
+        ],
+        "rules": {
+          "functional/functional-parameters": "off",
+          "functional/no-expression-statement": "off"
+        }
+      }
     ],
     "rules": {
       "@typescript-eslint/no-unused-vars": "off",

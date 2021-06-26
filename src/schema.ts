@@ -35,7 +35,7 @@ export type OwnerSchemaField = {
 
 export type RefSchemaField = {
   readonly type: 'ref';
-  readonly refCol: string;
+  readonly refedCol: string;
   readonly syncFields?: Dictionary<true>;
 };
 

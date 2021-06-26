@@ -1,12 +1,7 @@
+import { ThisColReferFields } from './field-types';
 import { Dictionary } from './util';
 
-export type Field =
-  | CountField
-  | CreationTimeField
-  | ImageField
-  | OwnerField
-  | RefField
-  | StringField;
+export type Field = CountField | CreationTimeField | ImageField | RefField | StringField;
 
 export type CountField = {
   readonly type: 'count';
@@ -22,16 +17,12 @@ export type ImageField = {
   readonly type: 'image';
 };
 
-export type OwnerField = {
-  readonly type: 'owner';
-  readonly userCol: string;
-  readonly syncFields: Dictionary<RefField | true>;
-};
-
 export type RefField = {
   readonly type: 'ref';
-  readonly refCol: string;
+  readonly isOwner: boolean;
+  readonly refedCol: string;
   readonly syncFields: Dictionary<RefField | true>;
+  readonly thisColReferFields: ThisColReferFields;
 };
 
 export type StringField = {
