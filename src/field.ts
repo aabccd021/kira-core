@@ -1,6 +1,4 @@
-import { Dictionary } from './util';
-
-export type SyncFields = Dictionary<RefField | true>;
+export type SyncFields = { readonly [key: string]: SyncFields | true };
 
 export type ThisColRefer = {
   readonly colName: string;
