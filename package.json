@@ -17,8 +17,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
-    "lint": "eslint . --ext ts",
-    "test": "jest --coverage"
+    "lint": "eslint . --ext ts"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
