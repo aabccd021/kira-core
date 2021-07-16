@@ -1,6 +1,6 @@
 {
   "name": "kira-core",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "repository": "git@github.com:aabccd021/kira-core.git",
   "author": "aabccd021 <aabccd021@gmail.com>",
   "license": "MIT",
@@ -17,8 +17,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
-    "lint": "eslint . --ext ts",
-    "test": "jest --coverage"
+    "lint": "eslint . --ext ts"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",

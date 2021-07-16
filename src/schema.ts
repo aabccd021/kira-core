@@ -1,10 +1,4 @@
-import { Dictionary, Version } from './util';
-
-export type Schema = {
-  readonly version: Version;
-  readonly userCol?: string;
-  readonly cols: Dictionary<Dictionary<SchemaField>>;
-};
+import { Dictionary } from './util';
 
 export type SchemaField =
   | CountSchemaField
