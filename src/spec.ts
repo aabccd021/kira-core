@@ -36,7 +36,7 @@ export type RefFieldSpec = {
   readonly type: 'ref';
   readonly isOwner: boolean;
   readonly refedCol: string;
-  readonly syncFields: SyncedFields;
+  readonly syncedFields: SyncedFields;
   readonly thisColRefers: readonly ColRefer[];
 };
 
