@@ -11,6 +11,8 @@ export type ColRefer = {
   readonly thisColRefers: readonly ColRefer[];
 };
 
+export type Spec = Dictionary<Dictionary<FieldSpec>>;
+
 export type FieldSpec =
   | CountFieldSpec
   | CreationTimeFieldSpec
