@@ -21,21 +21,21 @@ export type FieldSpec =
   | StringFieldSpec;
 
 export type CountFieldSpec = {
-  readonly type: 'count';
+  readonly _type: 'count';
   readonly countedCol: string;
   readonly groupByRef: string;
 };
 
 export type CreationTimeFieldSpec = {
-  readonly type: 'creationTime';
+  readonly _type: 'creationTime';
 };
 
 export type ImageFieldSpec = {
-  readonly type: 'image';
+  readonly _type: 'image';
 };
 
 export type RefFieldSpec = {
-  readonly type: 'ref';
+  readonly _type: 'ref';
   readonly isOwner: boolean;
   readonly refedCol: string;
   readonly syncedFields: SyncedFields;
@@ -43,5 +43,5 @@ export type RefFieldSpec = {
 };
 
 export type StringFieldSpec = {
-  readonly type: 'string';
+  readonly _type: 'string';
 };
