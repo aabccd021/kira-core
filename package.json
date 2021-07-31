@@ -1,6 +1,6 @@
 {
   "name": "kira-core",
-  "version": "0.3.19",
+  "version": "0.3.20",
   "repository": "git@github.com:aabccd021/kira-core.git",
   "author": "aabccd021 <aabccd021@gmail.com>",
   "license": "MIT",
@@ -54,8 +54,8 @@
     ],
     "coveragePathIgnorePatterns": [
       "src/data.ts",
-      "test/",
-      "failure/"
+      "src/apply-doc-write-failure.ts",
+      "test/"
     ],
     "setupFilesAfterEnv": [
       "jest-extended"
