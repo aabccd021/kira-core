@@ -18,14 +18,6 @@ export function isFieldEqual(
     return Value(f2?._type === 'string' && f1.value === f2.value);
   }
 
-  if (f1._type === 'stringArray') {
-    return Value(
-      f2?._type === 'stringArray' &&
-        f1.value.length === f2.value.length &&
-        f1.value.every((val, idx) => val === f2.value[idx])
-    );
-  }
-
   if (f1._type === 'image') {
     return Value(f2?._type === 'image' && f2.value.url === f1.value.url);
   }

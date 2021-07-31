@@ -1,14 +1,6 @@
 import { Failed, ShouldBeUnreachableFailure, Value } from 'trimop';
 
-import {
-  DateField,
-  ImageField,
-  isFieldEqual,
-  NumberField,
-  RefField,
-  StringArrayField,
-  StringField,
-} from '../src';
+import { DateField, ImageField, isFieldEqual, NumberField, RefField, StringField } from '../src';
 
 describe('isFieldEqual', () => {
   describe('StringField', () => {
@@ -71,59 +63,29 @@ describe('isFieldEqual', () => {
     });
   });
 
-  describe('StringArrayField', () => {
-    it('returns true if given same value', () => {
-      const f1 = StringArrayField(['kira', 'masumoto']);
-      const f2 = StringArrayField(['kira', 'masumoto']);
-      expect(isFieldEqual(f1, f2)).toStrictEqual(Value(true));
-    });
-
-    it('returns false if given different value', () => {
-      const f1 = StringArrayField(['kira', 'masumoto']);
-      const f2 = StringArrayField(['kira', 'masmott']);
-      expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
-    });
-
-    it('returns false if f1 is subarray of f2', () => {
-      const f1 = StringArrayField(['kira']);
-      const f2 = StringArrayField(['kira', 'masmott']);
-      expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
-    });
-
-    it('returns false if f2 is subarray of f1', () => {
-      const f1 = StringArrayField(['kira', 'masumoto']);
-      const f2 = StringArrayField(['kira']);
-      expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
-    });
-
-    it('returns false if arrays are in different order', () => {
-      const f1 = StringArrayField(['kira', 'masumoto']);
-      const f2 = StringArrayField(['masumoto', 'kira']);
-      expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
-    });
-
-    it('returns false if given f2 undefined', () => {
-      const f1 = StringArrayField(['kira']);
-      const f2 = undefined;
-      expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
-    });
-  });
-
   describe('ImageField', () => {
     it('returns true if given same value', () => {
-      const f1 = ImageField({ url: 'https://sakurazaka46.com/image/foo' });
-      const f2 = ImageField({ url: 'https://sakurazaka46.com/image/foo' });
+      const f1 = ImageField({
+        url: 'https://sakurazaka46.com/images/14/eb2/a748ca8dac608af8edde85b62a5a8/1000_1000_102400.jpg',
+      });
+      const f2 = ImageField({
+        url: 'https://sakurazaka46.com/images/14/eb2/a748ca8dac608af8edde85b62a5a8/1000_1000_102400.jpg',
+      });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(true));
     });
 
     it('returns false if given different value', () => {
-      const f1 = ImageField({ url: 'https://sakurazaka46.com/image/foo' });
+      const f1 = ImageField({
+        url: 'https://sakurazaka46.com/images/14/eb2/a748ca8dac608af8edde85b62a5a8/1000_1000_102400.jpg',
+      });
       const f2 = ImageField({ url: 'https://keyakizaka.com/image/foo' });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
     });
 
     it('returns false if given f2 undefined', () => {
-      const f1 = ImageField({ url: 'https://sakurazaka46.com/image/foo' });
+      const f1 = ImageField({
+        url: 'https://sakurazaka46.com/images/14/eb2/a748ca8dac608af8edde85b62a5a8/1000_1000_102400.jpg',
+      });
       const f2 = undefined;
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
     });
@@ -160,7 +122,7 @@ describe('isFieldEqual', () => {
         id: '46',
       });
       const f2 = RefField({
-        data: { age: NumberField(19), name: StringField('Kira Masumoto') },
+        data: { age: NumberField(21), name: StringField('Kira Masumoto') },
         id: '46',
       });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
@@ -168,7 +130,7 @@ describe('isFieldEqual', () => {
 
     it('returns false if f2 is part of f1', () => {
       const f1 = RefField({
-        data: { age: NumberField(19), name: StringField('Kira Masumoto') },
+        data: { age: NumberField(21), name: StringField('Kira Masumoto') },
         id: '46',
       });
       const f2 = RefField({

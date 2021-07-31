@@ -61,7 +61,7 @@ export type RefField = {
  * RefWriteField
  */
 // eslint-disable-next-line no-use-before-define
-export function RefWriteField(value: WriteDoc): RefWriteField {
+export function RefWriteField(value: WriteDocSnapshot): RefWriteField {
   return {
     _type: 'ref',
     value,
@@ -71,22 +71,7 @@ export function RefWriteField(value: WriteDoc): RefWriteField {
 export type RefWriteField = {
   readonly _type: 'ref';
   // eslint-disable-next-line no-use-before-define
-  readonly value: WriteDoc;
-};
-
-/**
- *StringArrayField
- */
-export function StringArrayField(value: readonly string[]): StringArrayField {
-  return {
-    _type: 'stringArray',
-    value,
-  };
-}
-
-export type StringArrayField = {
-  readonly _type: 'stringArray';
-  readonly value: readonly string[];
+  readonly value: WriteDocSnapshot;
 };
 
 /**
@@ -135,36 +120,6 @@ export type IncrementField = {
 };
 
 /**
- *StringArrayUnionField
- */
-export function StringArrayUnionField(value: string): StringArrayUnionField {
-  return {
-    _type: 'stringArrayUnion',
-    value,
-  };
-}
-
-export type StringArrayUnionField = {
-  readonly _type: 'stringArrayUnion';
-  readonly value: string;
-};
-
-/**
- *StringArrayRemoveField
- */
-export function StringArrayRemoveField(value: string): StringArrayRemoveField {
-  return {
-    _type: 'stringArrayRemove',
-    value,
-  };
-}
-
-export type StringArrayRemoveField = {
-  readonly _type: 'stringArrayRemove';
-  readonly value: string;
-};
-
-/**
  * Doc
  */
 export type DocKey = {
@@ -172,20 +127,16 @@ export type DocKey = {
   readonly id: string;
 };
 
-export type Field = BaseField &
-  (StringField | NumberField | DateField | StringArrayField | ImageField | RefField);
+export type Field = BaseField & (StringField | NumberField | DateField | ImageField | RefField);
 
 export type WriteField = BaseField &
   (
     | StringField
     | NumberField
     | DateField
-    | StringArrayField
     | ImageField
     | CreationTimeField
     | IncrementField
-    | StringArrayUnionField
-    | StringArrayRemoveField
     | RefWriteField
   );
 
@@ -197,3 +148,8 @@ export type DocSnapshot = {
 };
 
 export type WriteDoc = Dict<WriteField>;
+
+export type WriteDocSnapshot = {
+  readonly data: WriteDoc;
+  readonly id: string;
+};
