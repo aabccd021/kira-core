@@ -16,7 +16,7 @@ import {
   WriteField,
 } from '../src';
 import { applyDocWrite } from '../src/apply-doc-write';
-import { ApplyDocWriteFailure } from '../src/apply-doc-write-failure';
+import { ApplyFieldWriteFailure } from '../src/apply-field-write-failure';
 import { almostEqualTimeBefore } from './util';
 
 describe('applyDocWrite', () => {
@@ -105,7 +105,7 @@ describe('applyDocWrite', () => {
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
-          ApplyDocWriteFailure({
+          ApplyFieldWriteFailure({
             expectedFieldTypes: ['number', 'undefined'],
             field: StringField('Sakurazaka46'),
           })
@@ -129,7 +129,7 @@ describe('applyDocWrite', () => {
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
-          ApplyDocWriteFailure({
+          ApplyFieldWriteFailure({
             expectedFieldTypes: ['ref'],
             field: StringField('Keyakizaka46'),
           })
