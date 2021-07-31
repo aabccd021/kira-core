@@ -41,6 +41,7 @@
     "eslint-plugin-typescript-sort-keys": "^1.7.0",
     "eslint-plugin-unused-imports": "^1.1.2",
     "jest": "^27.0.6",
+    "jest-extended": "^0.11.5",
     "prettier": "^2.3.2",
     "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
@@ -52,7 +53,12 @@
       "**/test/**/*.test.ts"
     ],
     "coveragePathIgnorePatterns": [
-      "src/data.ts"
+      "src/data.ts",
+      "test/",
+      "failure/"
+    ],
+    "setupFilesAfterEnv": [
+      "jest-extended"
     ]
   },
   "eslintConfig": {
