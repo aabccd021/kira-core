@@ -1,7 +1,7 @@
 import { Either, Failed, Failure, foldRight, ShouldBeUnreachableFailure, Value } from 'trimop';
 
+import { ApplyDocWriteFailure } from './apply-doc-write-failure';
 import { DateField, Doc, Field, NumberField, RefField, WriteDoc, WriteField } from './data';
-import { ApplyWriteDocFailure } from './failure/apply-write-doc-failure';
 
 export function applyFieldWrite({
   field,
@@ -30,7 +30,7 @@ export function applyFieldWrite({
       return Value(NumberField((field !== undefined ? field.value : 0) + writeField.value));
     }
     return Failed(
-      ApplyWriteDocFailure({
+      ApplyDocWriteFailure({
         expectedFieldTypes: ['number', 'undefined'],
         field,
       })
@@ -65,7 +65,7 @@ export function applyFieldWrite({
     }
 
     return Failed(
-      ApplyWriteDocFailure({
+      ApplyDocWriteFailure({
         expectedFieldTypes: ['ref'],
         field,
       })

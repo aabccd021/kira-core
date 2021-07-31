@@ -1,14 +1,14 @@
-import { Field, WriteField } from '../data';
+import { Field, WriteField } from './data';
 
-export type ApplyWriteDocFailure = {
+export type ApplyDocWriteFailure = {
   readonly _failureType: 'ApplyWrite';
   readonly expectedFieldTypes: readonly (Field['_type'] | WriteField['_type'] | 'undefined')[];
   readonly field: Field | undefined;
 };
 
-export const ApplyWriteDocFailure: (
-  p: Omit<ApplyWriteDocFailure, '_failureType'>
-) => ApplyWriteDocFailure = (p) => ({
+export const ApplyDocWriteFailure: (
+  p: Omit<ApplyDocWriteFailure, '_failureType'>
+) => ApplyDocWriteFailure = (p) => ({
   ...p,
   _failureType: 'ApplyWrite',
 });
