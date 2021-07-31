@@ -1,6 +1,6 @@
-import { Dictionary } from './util';
+import { Dict } from 'trimop';
 
-export type SyncedFields = Dictionary<SyncedFields | true>;
+export type SyncedFields = Dict<SyncedFields | true>;
 
 export type ColRefer = {
   readonly colName: string;
@@ -10,15 +10,6 @@ export type ColRefer = {
   }[];
   readonly thisColRefers: readonly ColRefer[];
 };
-
-export type Spec = Dictionary<Dictionary<FieldSpec>>;
-
-export type FieldSpec =
-  | CountFieldSpec
-  | CreationTimeFieldSpec
-  | ImageFieldSpec
-  | RefFieldSpec
-  | StringFieldSpec;
 
 export type CountFieldSpec = {
   readonly _type: 'count';
@@ -45,3 +36,12 @@ export type RefFieldSpec = {
 export type StringFieldSpec = {
   readonly _type: 'string';
 };
+
+export type FieldSpec =
+  | CountFieldSpec
+  | CreationTimeFieldSpec
+  | ImageFieldSpec
+  | RefFieldSpec
+  | StringFieldSpec;
+
+export type Spec = Dict<Dict<FieldSpec>>;
