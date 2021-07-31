@@ -18,7 +18,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
     "lint": "eslint . --ext ts",
-    "test": "jest --coverage --verbose"
+    "test": "jest --coverage --verbose",
+    "release": "git pull origin main --no-edit && npm version patch && git push"
   },
   "dependencies": {
     "trimop": "0.1.5"
@@ -53,8 +54,6 @@
       "**/test/**/*.test.ts"
     ],
     "coveragePathIgnorePatterns": [
-      "src/data.ts",
-      "src/apply-doc-write-failure.ts",
       "test/"
     ],
     "setupFilesAfterEnv": [
