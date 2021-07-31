@@ -17,7 +17,8 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
-    "lint": "eslint . --ext ts"
+    "lint": "eslint . --ext ts",
+    "test": "jest --coverage --verbose"
   },
   "dependencies": {
     "trimop": "0.1.5"
@@ -46,7 +47,13 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/test/**/*.test.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "src/data.ts"
+    ]
   },
   "eslintConfig": {
     "ignorePatterns": [

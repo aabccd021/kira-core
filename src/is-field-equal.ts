@@ -39,7 +39,12 @@ export function isFieldEqual(
       (acc, [field3ChildName, field3Child]) =>
         foldRight(acc, (acc) =>
           foldRight(isFieldEqual(field3Child, f2.value.data[field3ChildName]), (isEqual) =>
-            Value(f1.value.id === f2.value.id && acc && isEqual)
+            Value(
+              isEqual &&
+                acc &&
+                f1.value.id === f2.value.id &&
+                Object.keys(f1.value.data).length === Object.keys(f2.value.data).length
+            )
           )
         ),
       Value(true)
