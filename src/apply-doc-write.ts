@@ -1,7 +1,9 @@
-import { Either, Failed, Failure, foldRight, ShouldBeUnreachableFailure, Value } from 'trimop';
+import { Either, Failed, foldRight, ShouldBeUnreachableFailure, Value } from 'trimop';
 
-import { ApplyDocWriteFailure } from './apply-doc-write-failure';
+import { ApplyFieldWriteFailure } from './apply-field-write-failure';
 import { DateField, Doc, Field, NumberField, RefField, WriteDoc, WriteField } from './data';
+
+export type ApplyDocWriteFailure = ApplyFieldWriteFailure | ShouldBeUnreachableFailure;
 
 export function applyFieldWrite({
   field,
@@ -9,7 +11,7 @@ export function applyFieldWrite({
 }: {
   readonly field: Field | undefined;
   readonly writeField: WriteField;
-}): Either<Failure, Field> {
+}): Either<ApplyDocWriteFailure, Field> {
   if (writeField._type === 'string') {
     return Value(writeField);
   }
@@ -30,7 +32,7 @@ export function applyFieldWrite({
       return Value(NumberField((field !== undefined ? field.value : 0) + writeField.value));
     }
     return Failed(
-      ApplyDocWriteFailure({
+      ApplyFieldWriteFailure({
         expectedFieldTypes: ['number', 'undefined'],
         field,
       })
@@ -65,7 +67,7 @@ export function applyFieldWrite({
     }
 
     return Failed(
-      ApplyDocWriteFailure({
+      ApplyFieldWriteFailure({
         expectedFieldTypes: ['ref'],
         field,
       })
@@ -80,8 +82,8 @@ export function applyDocWrite({
 }: {
   readonly doc: Doc | undefined;
   readonly writeDoc: WriteDoc;
-}): Either<Failure, Doc> {
-  return Object.entries(writeDoc).reduce<Either<Failure, Doc>>(
+}): Either<ApplyDocWriteFailure, Doc> {
+  return Object.entries(writeDoc).reduce<Either<ApplyDocWriteFailure, Doc>>(
     (acc, [fieldName, writeField]) =>
       foldRight(acc, (acc) =>
         foldRight(applyFieldWrite({ field: doc?.[fieldName], writeField }), (field) =>
