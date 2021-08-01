@@ -61,17 +61,17 @@ export type RefField = {
  * RefWriteField
  */
 // eslint-disable-next-line no-use-before-define
-export function RefWriteField(snapshot: WriteDocSnapshot): RefWriteField {
+export function RefWriteField(doc: WriteDoc): RefWriteField {
   return {
     _type: 'ref',
-    snapshot,
+    doc,
   };
 }
 
 export type RefWriteField = {
   readonly _type: 'ref';
   // eslint-disable-next-line no-use-before-define
-  readonly snapshot: WriteDocSnapshot;
+  readonly doc: WriteDoc;
 };
 
 /**

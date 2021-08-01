@@ -23,17 +23,25 @@ describe('applyDocWrite', () => {
   it('correctly apply write', () => {
     const doc: Doc = {
       age: NumberField(18),
+      favoriteNumber: NumberField(7),
       group: RefField({
         doc: {
           name: StringField('Keyakizaka46'),
         },
-        id: '46',
+        id: 'keyakizaka',
       }),
-      luckyNumber: NumberField(7),
+      hobby: RefField({
+        doc: {
+          name: StringField('Rubiks Cube'),
+          record: NumberField(60),
+        },
+        id: 'rubiks',
+      }),
+      latestBlogUpdate: DateField(new Date('2020-09-12T00:00:00Z')),
       name: StringField('Kira Masumoto'),
       nickname: StringField('dorokatsu'),
       profilePicture: ImageField({
-        url: 'https://sakurazaka46.com/images/14/eb2/a748ca8dac608af8edde85b62a5a8/1000_1000_102400.jpg',
+        url: 'https://sakurazaka46.com/images/14/7ef/aa0bc399d68377e1e6611efb802b4.jpg',
       }),
     };
     const writeDoc: WriteDoc = {
@@ -41,24 +49,21 @@ describe('applyDocWrite', () => {
       age: IncrementField(1),
       birthday: DateField(new Date('2002-01-12T00:00:00Z')),
       group: RefWriteField({
-        doc: {
-          age: IncrementField(1),
-          logoPicture: ImageField({
-            url: 'https://sakurazaka46.com/files/14/s46/img/com-logo_sp.svg',
-          }),
-          name: StringField('Sakurazaka46'),
-        },
-        id: '46',
+        age: IncrementField(1),
+        logoPicture: ImageField({
+          url: 'https://sakurazaka46.com/files/14/s46/img/com-logo_sp.svg',
+        }),
+        name: StringField('Sakurazaka46'),
       }),
-      hobby: StringField('Rubiks Cube'),
+      hobby: RefWriteField({
+        record: NumberField(40),
+      }),
       joinYear: NumberField(2020),
-      mentor: RefWriteField({
-        doc: {
-          name: StringField('AkaneMoriya'),
-        },
-        id: '23',
-      }),
+      latestBlogUpdate: DateField(new Date('2021-01-01T00:00:00Z')),
       nickname: StringField('Kirako'),
+      profilePicture: ImageField({
+        url: 'https://sakurazaka46.com/images/14/eb2/a748ca8dac608af8edde85b62a5a8/1000_1000_102400.jpg',
+      }),
     };
     expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
       Value({
@@ -68,7 +73,8 @@ describe('applyDocWrite', () => {
         },
         age: NumberField(19),
         birthday: DateField(new Date('2002-01-12T00:00:00Z')),
-        group: RefWriteField({
+        favoriteNumber: NumberField(7),
+        group: RefField({
           doc: {
             age: NumberField(1),
             logoPicture: ImageField({
@@ -76,17 +82,17 @@ describe('applyDocWrite', () => {
             }),
             name: StringField('Sakurazaka46'),
           },
-          id: '46',
+          id: 'keyakizaka',
         }),
-        hobby: StringField('Rubiks Cube'),
-        joinYear: NumberField(2020),
-        luckyNumber: NumberField(7),
-        mentor: RefWriteField({
+        hobby: RefField({
           doc: {
-            name: StringField('AkaneMoriya'),
+            name: StringField('Rubiks Cube'),
+            record: NumberField(40),
           },
-          id: '23',
+          id: 'rubiks',
         }),
+        joinYear: NumberField(2020),
+        latestBlogUpdate: DateField(new Date('2021-01-01T00:00:00Z')),
         name: StringField('Kira Masumoto'),
         nickname: StringField('Kirako'),
         profilePicture: ImageField({
@@ -115,16 +121,13 @@ describe('applyDocWrite', () => {
   });
 
   describe('RefWriteField', () => {
-    it('fails to update if previous value is not a RefField', () => {
+    it('returns shouldBeUnreachableFailure if previous value is not a RefField', () => {
       const doc: Doc = {
         group: StringField('Keyakizaka46'),
       };
       const writeDoc: WriteDoc = {
         group: RefWriteField({
-          doc: {
-            name: StringField('Sakurazaka46'),
-          },
-          id: '46',
+          name: StringField('Sakurazaka46'),
         }),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
@@ -136,9 +139,123 @@ describe('applyDocWrite', () => {
         )
       );
     });
+
+    it('returns shouldBeUnreachableFailure if previous value is undefined', () => {
+      const doc: Doc = {};
+      const writeDoc: WriteDoc = {
+        group: RefWriteField({
+          name: StringField('Sakurazaka46'),
+        }),
+      };
+      expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
+        Failed(
+          InvalidFieldTypeFailure({
+            expectedFieldTypes: ['ref'],
+            field: undefined,
+          })
+        )
+      );
+    });
   });
 
-  it('should return shouldBeUnreachableFailure if given invalid field', () => {
+  describe('StringField', () => {
+    it('returns shouldBeUnreachableFailure if previous value is not StringField', () => {
+      const doc: Doc = {
+        joinYear: NumberField(2020),
+      };
+      const writeDoc: WriteDoc = {
+        joinYear: StringField('2020'),
+      };
+      expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
+        Failed(
+          InvalidFieldTypeFailure({
+            expectedFieldTypes: ['string', 'undefined'],
+            field: NumberField(2020),
+          })
+        )
+      );
+    });
+  });
+
+  describe('NumberField', () => {
+    it('returns shouldBeUnreachableFailure if previous value is not NumberField', () => {
+      const doc: Doc = {
+        name: StringField('Masumoto Kira'),
+      };
+      const writeDoc: WriteDoc = {
+        name: NumberField(21),
+      };
+      expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
+        Failed(
+          InvalidFieldTypeFailure({
+            expectedFieldTypes: ['number', 'undefined'],
+            field: StringField('Masumoto Kira'),
+          })
+        )
+      );
+    });
+  });
+
+  describe('ImageField', () => {
+    it('returns shouldBeUnreachableFailure if previous value is not ImageField', () => {
+      const doc: Doc = {
+        name: StringField('Masumoto Kira'),
+      };
+      const writeDoc: WriteDoc = {
+        name: ImageField({
+          url: 'https://sakurazaka46.com/images/14/7ef/aa0bc399d68377e1e6611efb802b4.jpg',
+        }),
+      };
+      expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
+        Failed(
+          InvalidFieldTypeFailure({
+            expectedFieldTypes: ['image', 'undefined'],
+            field: StringField('Masumoto Kira'),
+          })
+        )
+      );
+    });
+  });
+
+  describe('DateField', () => {
+    it('returns shouldBeUnreachableFailure if previous value is not DateField', () => {
+      const doc: Doc = {
+        name: StringField('Masumoto Kira'),
+      };
+      const writeDoc: WriteDoc = {
+        name: DateField(new Date()),
+      };
+      expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
+        Failed(
+          InvalidFieldTypeFailure({
+            expectedFieldTypes: ['date', 'undefined'],
+            field: StringField('Masumoto Kira'),
+          })
+        )
+      );
+    });
+  });
+
+  describe('CreationTimeField', () => {
+    it('returns shouldBeUnreachableFailure if previous value is not undefined', () => {
+      const doc: Doc = {
+        name: StringField('Masumoto Kira'),
+      };
+      const writeDoc: WriteDoc = {
+        name: CreationTimeField(),
+      };
+      expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
+        Failed(
+          InvalidFieldTypeFailure({
+            expectedFieldTypes: ['undefined'],
+            field: StringField('Masumoto Kira'),
+          })
+        )
+      );
+    });
+  });
+
+  it('returns shouldBeUnreachableFailure if given invalid field', () => {
     const doc: Doc = {
       group: StringField('Keyakizaka46'),
     };

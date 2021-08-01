@@ -13,19 +13,59 @@ export function applyFieldWrite({
   readonly writeField: WriteField;
 }): Either<ApplyDocWriteFailure, Field> {
   if (writeField._type === 'string') {
-    return Value(writeField);
+    if (field === undefined || field._type === 'string') {
+      return Value(writeField);
+    }
+    return Failed(
+      InvalidFieldTypeFailure({
+        expectedFieldTypes: ['string', 'undefined'],
+        field,
+      })
+    );
   }
   if (writeField._type === 'number') {
-    return Value(writeField);
+    if (field === undefined || field._type === 'number') {
+      return Value(writeField);
+    }
+    return Failed(
+      InvalidFieldTypeFailure({
+        expectedFieldTypes: ['number', 'undefined'],
+        field,
+      })
+    );
   }
   if (writeField._type === 'image') {
-    return Value(writeField);
+    if (field === undefined || field._type === 'image') {
+      return Value(writeField);
+    }
+    return Failed(
+      InvalidFieldTypeFailure({
+        expectedFieldTypes: ['image', 'undefined'],
+        field,
+      })
+    );
   }
   if (writeField._type === 'date') {
-    return Value(writeField);
+    if (field === undefined || field._type === 'date') {
+      return Value(writeField);
+    }
+    return Failed(
+      InvalidFieldTypeFailure({
+        expectedFieldTypes: ['date', 'undefined'],
+        field,
+      })
+    );
   }
   if (writeField._type === 'creationTime') {
-    return Value(DateField(new Date()));
+    if (field === undefined) {
+      return Value(DateField(new Date()));
+    }
+    return Failed(
+      InvalidFieldTypeFailure({
+        expectedFieldTypes: ['undefined'],
+        field,
+      })
+    );
   }
   if (writeField._type === 'increment') {
     if (field === undefined || field._type === 'number') {
@@ -39,33 +79,19 @@ export function applyFieldWrite({
     );
   }
   if (writeField._type === 'ref') {
-    if (field === undefined) {
+    if (field?._type === 'ref') {
       return foldValue(
         // eslint-disable-next-line no-use-before-define
-        applyDocWrite({ doc: {}, writeDoc: writeField.snapshot.doc }),
+        applyDocWrite({ doc: field.snapshot.doc, writeDoc: writeField.doc }),
         (newDoc) =>
           Value(
             RefField({
               doc: newDoc,
-              id: writeField.snapshot.id,
+              id: field.snapshot.id,
             })
           )
       );
     }
-    if (field._type === 'ref') {
-      return foldValue(
-        // eslint-disable-next-line no-use-before-define
-        applyDocWrite({ doc: field.snapshot.doc, writeDoc: writeField.snapshot.doc }),
-        (newDoc) =>
-          Value(
-            RefField({
-              doc: newDoc,
-              id: writeField.snapshot.id,
-            })
-          )
-      );
-    }
-
     return Failed(
       InvalidFieldTypeFailure({
         expectedFieldTypes: ['ref'],
