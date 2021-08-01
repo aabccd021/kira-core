@@ -30,10 +30,10 @@ export function filterSyncedFields({
             });
           }
 
-          if (field._type !== 'ref') {
+          if (field._type !== 'Ref') {
             return Failed(
               InvalidFieldTypeFailure({
-                expectedFieldTypes: ['ref'],
+                expectedFieldTypes: ['Ref'],
                 field,
               })
             );

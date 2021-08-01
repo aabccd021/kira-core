@@ -79,7 +79,7 @@ describe('filterSyncedFields', () => {
     };
     expect(filterSyncedFields({ doc, syncedFields })).toStrictEqual(
       Failed(
-        InvalidFieldTypeFailure({ expectedFieldTypes: ['ref'], field: StringField('Akane Moriya') })
+        InvalidFieldTypeFailure({ expectedFieldTypes: ['Ref'], field: StringField('Akane Moriya') })
       )
     );
   });

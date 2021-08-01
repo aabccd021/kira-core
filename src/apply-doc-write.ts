@@ -12,62 +12,62 @@ export function applyFieldWrite({
   readonly field: Field | undefined;
   readonly writeField: WriteField;
 }): Either<ApplyDocWriteFailure, Field> {
-  if (writeField._type === 'string') {
-    if (field === undefined || field._type === 'string') {
+  if (writeField._type === 'String') {
+    if (field === undefined || field._type === 'String') {
       return Value(writeField);
     }
     return Failed(
       InvalidFieldTypeFailure({
-        expectedFieldTypes: ['string', 'undefined'],
+        expectedFieldTypes: ['String', 'undefined'],
         field,
       })
     );
   }
-  if (writeField._type === 'number') {
-    if (field === undefined || field._type === 'number') {
+  if (writeField._type === 'Number') {
+    if (field === undefined || field._type === 'Number') {
       return Value(writeField);
     }
     return Failed(
       InvalidFieldTypeFailure({
-        expectedFieldTypes: ['number', 'undefined'],
+        expectedFieldTypes: ['Number', 'undefined'],
         field,
       })
     );
   }
-  if (writeField._type === 'image') {
-    if (field === undefined || field._type === 'image') {
+  if (writeField._type === 'Image') {
+    if (field === undefined || field._type === 'Image') {
       return Value(writeField);
     }
     return Failed(
       InvalidFieldTypeFailure({
-        expectedFieldTypes: ['image', 'undefined'],
+        expectedFieldTypes: ['Image', 'undefined'],
         field,
       })
     );
   }
-  if (writeField._type === 'date') {
-    if (field === undefined || field._type === 'date') {
+  if (writeField._type === 'Date') {
+    if (field === undefined || field._type === 'Date') {
       return Value(writeField);
     }
     return Failed(
       InvalidFieldTypeFailure({
-        expectedFieldTypes: ['date', 'undefined'],
+        expectedFieldTypes: ['Date', 'undefined'],
         field,
       })
     );
   }
-  if (writeField._type === 'ref') {
-    if (field === undefined || field._type === 'ref') {
+  if (writeField._type === 'Ref') {
+    if (field === undefined || field._type === 'Ref') {
       return Value(writeField);
     }
     return Failed(
       InvalidFieldTypeFailure({
-        expectedFieldTypes: ['ref', 'undefined'],
+        expectedFieldTypes: ['Ref', 'undefined'],
         field,
       })
     );
   }
-  if (writeField._type === 'creationTime') {
+  if (writeField._type === 'CreationTime') {
     if (field === undefined) {
       return Value(DateField(new Date()));
     }
@@ -78,19 +78,19 @@ export function applyFieldWrite({
       })
     );
   }
-  if (writeField._type === 'increment') {
-    if (field === undefined || field._type === 'number') {
+  if (writeField._type === 'Increment') {
+    if (field === undefined || field._type === 'Number') {
       return Value(NumberField((field !== undefined ? field.value : 0) + writeField.value));
     }
     return Failed(
       InvalidFieldTypeFailure({
-        expectedFieldTypes: ['number', 'undefined'],
+        expectedFieldTypes: ['Number', 'undefined'],
         field,
       })
     );
   }
-  if (writeField._type === 'refUpdate') {
-    if (field?._type === 'ref') {
+  if (writeField._type === 'RefUpdate') {
+    if (field?._type === 'Ref') {
       return foldValue(
         // eslint-disable-next-line no-use-before-define
         applyDocWrite({ doc: field.snapshot.doc, writeDoc: writeField.doc }),
@@ -105,7 +105,7 @@ export function applyFieldWrite({
     }
     return Failed(
       InvalidFieldTypeFailure({
-        expectedFieldTypes: ['ref'],
+        expectedFieldTypes: ['Ref'],
         field,
       })
     );
