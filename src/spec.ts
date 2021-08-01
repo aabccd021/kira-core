@@ -37,6 +37,11 @@ export type StringFieldSpec = {
   readonly _type: 'String';
 };
 
-export type FieldSpec = CreationTimeFieldSpec | ImageFieldSpec | RefFieldSpec | StringFieldSpec;
+export type FieldSpec =
+  | CreationTimeFieldSpec
+  | ImageFieldSpec
+  | RefFieldSpec
+  | StringFieldSpec
+  | CountFieldSpec;
 
 export type Spec = Dict<Dict<FieldSpec>>;
