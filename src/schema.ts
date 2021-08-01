@@ -5,7 +5,7 @@ export type SchemaSyncedFields = Dict<SchemaSyncedFields | true>;
 export type CountSchemaField = {
   readonly countedCol: string;
   readonly groupByRef: string;
-  readonly type: 'count';
+  readonly type: 'Count';
 };
 
 export type CreationTimeSchemaField = {
