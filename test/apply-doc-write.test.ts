@@ -10,7 +10,7 @@ import {
   IncrementField,
   NumberField,
   RefField,
-  RefWriteField,
+  RefUpdateField,
   StringField,
   WriteDoc,
   WriteField,
@@ -48,19 +48,25 @@ describe('applyDocWrite', () => {
       accountCreationTime: CreationTimeField(),
       age: IncrementField(1),
       birthday: DateField(new Date('2002-01-12T00:00:00Z')),
-      group: RefWriteField({
+      group: RefUpdateField({
         age: IncrementField(1),
         logoPicture: ImageField({
           url: 'https://sakurazaka46.com/files/14/s46/img/com-logo_sp.svg',
         }),
         name: StringField('Sakurazaka46'),
       }),
-      hobby: RefWriteField({
+      hobby: RefUpdateField({
         record: NumberField(40),
       }),
       joinYear: NumberField(2020),
       latestBlogUpdate: DateField(new Date('2021-01-01T00:00:00Z')),
       nickname: StringField('Kirako'),
+      origin: RefField({
+        doc: {
+          region: StringField('kansai'),
+        },
+        id: 'hyougo',
+      }),
       profilePicture: ImageField({
         url: 'https://sakurazaka46.com/images/14/eb2/a748ca8dac608af8edde85b62a5a8/1000_1000_102400.jpg',
       }),
@@ -95,6 +101,12 @@ describe('applyDocWrite', () => {
         latestBlogUpdate: DateField(new Date('2021-01-01T00:00:00Z')),
         name: StringField('Kira Masumoto'),
         nickname: StringField('Kirako'),
+        origin: RefField({
+          doc: {
+            region: StringField('kansai'),
+          },
+          id: 'hyougo',
+        }),
         profilePicture: ImageField({
           url: 'https://sakurazaka46.com/images/14/eb2/a748ca8dac608af8edde85b62a5a8/1000_1000_102400.jpg',
         }),
@@ -120,13 +132,13 @@ describe('applyDocWrite', () => {
     });
   });
 
-  describe('RefWriteField', () => {
+  describe('RefUpdateField', () => {
     it('returns shouldBeUnreachableFailure if previous value is not a RefField', () => {
       const doc: Doc = {
         group: StringField('Keyakizaka46'),
       };
       const writeDoc: WriteDoc = {
-        group: RefWriteField({
+        group: RefUpdateField({
           name: StringField('Sakurazaka46'),
         }),
       };
@@ -143,7 +155,7 @@ describe('applyDocWrite', () => {
     it('returns shouldBeUnreachableFailure if previous value is undefined', () => {
       const doc: Doc = {};
       const writeDoc: WriteDoc = {
-        group: RefWriteField({
+        group: RefUpdateField({
           name: StringField('Sakurazaka46'),
         }),
       };
@@ -171,6 +183,31 @@ describe('applyDocWrite', () => {
           InvalidFieldTypeFailure({
             expectedFieldTypes: ['string', 'undefined'],
             field: NumberField(2020),
+          })
+        )
+      );
+    });
+  });
+
+  describe('RefField', () => {
+    it('returns shouldBeUnreachableFailure if previous value is not RefField', () => {
+      const doc: Doc = {
+        hobby: StringField('rubiks'),
+      };
+      const writeDoc: WriteDoc = {
+        hobby: RefField({
+          doc: {
+            name: StringField('Rubiks Cube'),
+            record: NumberField(60),
+          },
+          id: 'rubiks',
+        }),
+      };
+      expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
+        Failed(
+          InvalidFieldTypeFailure({
+            expectedFieldTypes: ['ref', 'undefined'],
+            field: StringField('rubiks'),
           })
         )
       );
