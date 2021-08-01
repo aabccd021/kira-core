@@ -16,7 +16,7 @@ import {
   WriteField,
 } from '../src';
 import { applyDocWrite } from '../src/apply-doc-write';
-import { ApplyFieldWriteFailure } from '../src/apply-field-write-failure';
+import { InvalidFieldTypeFailure } from '../src/invalid-field-type-failure';
 import { almostEqualTimeBefore } from './util';
 
 describe('applyDocWrite', () => {
@@ -24,7 +24,7 @@ describe('applyDocWrite', () => {
     const doc: Doc = {
       age: NumberField(18),
       group: RefField({
-        data: {
+        doc: {
           name: StringField('Keyakizaka46'),
         },
         id: '46',
@@ -41,7 +41,7 @@ describe('applyDocWrite', () => {
       age: IncrementField(1),
       birthday: DateField(new Date('2002-01-12T00:00:00Z')),
       group: RefWriteField({
-        data: {
+        doc: {
           age: IncrementField(1),
           logoPicture: ImageField({
             url: 'https://sakurazaka46.com/files/14/s46/img/com-logo_sp.svg',
@@ -53,7 +53,7 @@ describe('applyDocWrite', () => {
       hobby: StringField('Rubiks Cube'),
       joinYear: NumberField(2020),
       mentor: RefWriteField({
-        data: {
+        doc: {
           name: StringField('AkaneMoriya'),
         },
         id: '23',
@@ -69,7 +69,7 @@ describe('applyDocWrite', () => {
         age: NumberField(19),
         birthday: DateField(new Date('2002-01-12T00:00:00Z')),
         group: RefWriteField({
-          data: {
+          doc: {
             age: NumberField(1),
             logoPicture: ImageField({
               url: 'https://sakurazaka46.com/files/14/s46/img/com-logo_sp.svg',
@@ -82,7 +82,7 @@ describe('applyDocWrite', () => {
         joinYear: NumberField(2020),
         luckyNumber: NumberField(7),
         mentor: RefWriteField({
-          data: {
+          doc: {
             name: StringField('AkaneMoriya'),
           },
           id: '23',
@@ -105,7 +105,7 @@ describe('applyDocWrite', () => {
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
-          ApplyFieldWriteFailure({
+          InvalidFieldTypeFailure({
             expectedFieldTypes: ['number', 'undefined'],
             field: StringField('Sakurazaka46'),
           })
@@ -121,7 +121,7 @@ describe('applyDocWrite', () => {
       };
       const writeDoc: WriteDoc = {
         group: RefWriteField({
-          data: {
+          doc: {
             name: StringField('Sakurazaka46'),
           },
           id: '46',
@@ -129,7 +129,7 @@ describe('applyDocWrite', () => {
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
-          ApplyFieldWriteFailure({
+          InvalidFieldTypeFailure({
             expectedFieldTypes: ['ref'],
             field: StringField('Keyakizaka46'),
           })

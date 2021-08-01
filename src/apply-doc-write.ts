@@ -1,9 +1,9 @@
 import { Either, Failed, foldRight, ShouldBeUnreachableFailure, Value } from 'trimop';
 
-import { ApplyFieldWriteFailure } from './apply-field-write-failure';
 import { DateField, Doc, Field, NumberField, RefField, WriteDoc, WriteField } from './data';
+import { InvalidFieldTypeFailure } from './invalid-field-type-failure';
 
-export type ApplyDocWriteFailure = ApplyFieldWriteFailure | ShouldBeUnreachableFailure;
+export type ApplyDocWriteFailure = InvalidFieldTypeFailure | ShouldBeUnreachableFailure;
 
 export function applyFieldWrite({
   field,
@@ -32,7 +32,7 @@ export function applyFieldWrite({
       return Value(NumberField((field !== undefined ? field.value : 0) + writeField.value));
     }
     return Failed(
-      ApplyFieldWriteFailure({
+      InvalidFieldTypeFailure({
         expectedFieldTypes: ['number', 'undefined'],
         field,
       })
@@ -42,12 +42,12 @@ export function applyFieldWrite({
     if (field === undefined) {
       return foldRight(
         // eslint-disable-next-line no-use-before-define
-        applyDocWrite({ doc: {}, writeDoc: writeField.value.data }),
+        applyDocWrite({ doc: {}, writeDoc: writeField.snapshot.doc }),
         (newDoc) =>
           Value(
             RefField({
-              data: newDoc,
-              id: writeField.value.id,
+              doc: newDoc,
+              id: writeField.snapshot.id,
             })
           )
       );
@@ -55,19 +55,19 @@ export function applyFieldWrite({
     if (field._type === 'ref') {
       return foldRight(
         // eslint-disable-next-line no-use-before-define
-        applyDocWrite({ doc: field.value.data, writeDoc: writeField.value.data }),
+        applyDocWrite({ doc: field.snapshot.doc, writeDoc: writeField.snapshot.doc }),
         (newDoc) =>
           Value(
             RefField({
-              data: newDoc,
-              id: writeField.value.id,
+              doc: newDoc,
+              id: writeField.snapshot.id,
             })
           )
       );
     }
 
     return Failed(
-      ApplyFieldWriteFailure({
+      InvalidFieldTypeFailure({
         expectedFieldTypes: ['ref'],
         field,
       })

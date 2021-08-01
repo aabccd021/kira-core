@@ -47,31 +47,31 @@ export type DateField = {
  *RefField
  */
 // eslint-disable-next-line no-use-before-define
-export function RefField(value: DocSnapshot): RefField {
-  return { _type: 'ref', value };
+export function RefField(snapshot: DocSnapshot): RefField {
+  return { _type: 'ref', snapshot };
 }
 
 export type RefField = {
   readonly _type: 'ref';
   // eslint-disable-next-line no-use-before-define
-  readonly value: DocSnapshot;
+  readonly snapshot: DocSnapshot;
 };
 
 /**
  * RefWriteField
  */
 // eslint-disable-next-line no-use-before-define
-export function RefWriteField(value: WriteDocSnapshot): RefWriteField {
+export function RefWriteField(snapshot: WriteDocSnapshot): RefWriteField {
   return {
     _type: 'ref',
-    value,
+    snapshot,
   };
 }
 
 export type RefWriteField = {
   readonly _type: 'ref';
   // eslint-disable-next-line no-use-before-define
-  readonly value: WriteDocSnapshot;
+  readonly snapshot: WriteDocSnapshot;
 };
 
 /**
@@ -143,13 +143,13 @@ export type WriteField = BaseField &
 export type Doc = Dict<Field>;
 
 export type DocSnapshot = {
-  readonly data: Doc;
+  readonly doc: Doc;
   readonly id: string;
 };
 
 export type WriteDoc = Dict<WriteField>;
 
 export type WriteDocSnapshot = {
-  readonly data: WriteDoc;
+  readonly doc: WriteDoc;
   readonly id: string;
 };

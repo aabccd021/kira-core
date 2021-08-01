@@ -27,15 +27,15 @@ export function isFieldEqual(
       return Value(false);
     }
 
-    return Object.entries(f1.value.data).reduce<Either<ShouldBeUnreachableFailure, boolean>>(
+    return Object.entries(f1.snapshot.doc).reduce<Either<ShouldBeUnreachableFailure, boolean>>(
       (acc, [field3ChildName, field3Child]) =>
         foldRight(acc, (acc) =>
-          foldRight(isFieldEqual(field3Child, f2.value.data[field3ChildName]), (isEqual) =>
+          foldRight(isFieldEqual(field3Child, f2.snapshot.doc[field3ChildName]), (isEqual) =>
             Value(
               isEqual &&
                 acc &&
-                f1.value.id === f2.value.id &&
-                Object.keys(f1.value.data).length === Object.keys(f2.value.data).length
+                f1.snapshot.id === f2.snapshot.id &&
+                Object.keys(f1.snapshot.doc).length === Object.keys(f2.snapshot.doc).length
             )
           )
         ),

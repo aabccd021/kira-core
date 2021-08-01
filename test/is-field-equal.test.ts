@@ -93,36 +93,36 @@ describe('isFieldEqual', () => {
 
   describe('RefField', () => {
     it('returns true if given same value', () => {
-      const f1 = RefField({ data: { name: StringField('Kira Masumoto') }, id: '46' });
-      const f2 = RefField({ data: { name: StringField('Kira Masumoto') }, id: '46' });
+      const f1 = RefField({ doc: { name: StringField('Kira Masumoto') }, id: '46' });
+      const f2 = RefField({ doc: { name: StringField('Kira Masumoto') }, id: '46' });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(true));
     });
 
     it('returns true if given same value nested', () => {
       const f1 = RefField({
-        data: { owner: RefField({ data: { name: StringField('Kira Masumoto') }, id: '46' }) },
+        doc: { owner: RefField({ doc: { name: StringField('Kira Masumoto') }, id: '46' }) },
         id: '21',
       });
       const f2 = RefField({
-        data: { owner: RefField({ data: { name: StringField('Kira Masumoto') }, id: '46' }) },
+        doc: { owner: RefField({ doc: { name: StringField('Kira Masumoto') }, id: '46' }) },
         id: '21',
       });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(true));
     });
 
     it('returns false if given different id', () => {
-      const f1 = RefField({ data: { name: StringField('Kira Masumoto') }, id: '46' });
-      const f2 = RefField({ data: { name: StringField('Kira Masumoto') }, id: '21' });
+      const f1 = RefField({ doc: { name: StringField('Kira Masumoto') }, id: '46' });
+      const f2 = RefField({ doc: { name: StringField('Kira Masumoto') }, id: '21' });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
     });
 
     it('returns false if f1 is part of f2', () => {
       const f1 = RefField({
-        data: { name: StringField('Kira Masumoto') },
+        doc: { name: StringField('Kira Masumoto') },
         id: '46',
       });
       const f2 = RefField({
-        data: { age: NumberField(21), name: StringField('Kira Masumoto') },
+        doc: { age: NumberField(21), name: StringField('Kira Masumoto') },
         id: '46',
       });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
@@ -130,30 +130,30 @@ describe('isFieldEqual', () => {
 
     it('returns false if f2 is part of f1', () => {
       const f1 = RefField({
-        data: { age: NumberField(21), name: StringField('Kira Masumoto') },
+        doc: { age: NumberField(21), name: StringField('Kira Masumoto') },
         id: '46',
       });
       const f2 = RefField({
-        data: { name: StringField('Kira Masumoto') },
+        doc: { name: StringField('Kira Masumoto') },
         id: '46',
       });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
     });
 
     it('returns false if given different subfield value', () => {
-      const f1 = RefField({ data: { name: StringField('Kira Masumoto') }, id: '46' });
-      const f2 = RefField({ data: { name: StringField('Karin Fujiyoshi') }, id: '46' });
+      const f1 = RefField({ doc: { name: StringField('Kira Masumoto') }, id: '46' });
+      const f2 = RefField({ doc: { name: StringField('Karin Fujiyoshi') }, id: '46' });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
     });
 
     it('returns false if given different subfield type', () => {
-      const f1 = RefField({ data: { name: StringField('Kira Masumoto') }, id: '46' });
-      const f2 = RefField({ data: { name: NumberField(19) }, id: '46' });
+      const f1 = RefField({ doc: { name: StringField('Kira Masumoto') }, id: '46' });
+      const f2 = RefField({ doc: { name: NumberField(19) }, id: '46' });
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
     });
 
     it('returns false if given f2 undefined', () => {
-      const f1 = RefField({ data: { name: StringField('Kira Masumoto') }, id: '46' });
+      const f1 = RefField({ doc: { name: StringField('Kira Masumoto') }, id: '46' });
       const f2 = undefined;
       expect(isFieldEqual(f1, f2)).toStrictEqual(Value(false));
     });
