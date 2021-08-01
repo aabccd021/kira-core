@@ -21,7 +21,8 @@
     "test": "jest --coverage --verbose",
     "latest": "yarn upgrade-interactive --latest",
     "please": "yarn tsc --noEmit && yarn lint --fix && yarn test ",
-    "release": "git pull origin main --no-edit && npm version patch && git push"
+    "release": "git pull origin main --no-edit && npm version patch && git push && open-cli https://github.com/aabccd021/kira-core/compare/main...early-dev",
+    "opun": "open-cli https://google.com"
   },
   "dependencies": {
     "trimop": "0.1.7"
@@ -45,6 +46,7 @@
     "eslint-plugin-unused-imports": "^1.1.2",
     "jest": "^27.0.6",
     "jest-extended": "^0.11.5",
+    "open-cli": "^7.0.0",
     "prettier": "^2.3.2",
     "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
