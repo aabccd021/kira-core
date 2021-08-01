@@ -907,10 +907,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-15.3.0.tgz#d6fed7d6bc6854306da3dea1af9f874b00783e26"
   integrity sha512-8/bnjSZD86ZfpBsDlCIkNXIvm+h6wi9g7IqL+kmFkQ+Wvu3JrasgLElfiPgoo8V8vVfnEi0QVS12gbl94h9YsQ==
 
-"@types/node@^16.4.8":
-  version "16.4.8"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.8.tgz#ef4974f47524448428542365db2fe7b638f928e5"
-  integrity sha512-VL7RZyCpfYEmbyd3/Eq5RNYhZt7yoL1JThZQ3KzimzhLya2Qa86U1ZZmioNWAAjiz99z1ED1xF9NUV2srvfVrA==
+"@types/node@^16.4.9":
+  version "16.4.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.9.tgz#04eb3da65d08ea377f5e682bf0d22dc1f5e7f19e"
+  integrity sha512-HXhRf581nCItzn8yevv4LYt+bJ5cBbDBAJExbDPMeU/2n5/j0ZemGpayahFBP4xL7RseaCLASLD9i9AYyDe7Nw==
 
 "@types/prettier@^2.1.5":
   version "2.3.2"
@@ -1931,10 +1931,10 @@ eslint-module-utils@^2.6.1:
     debug "^3.2.7"
     pkg-dir "^2.0.0"
 
-eslint-plugin-functional@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-functional/-/eslint-plugin-functional-3.4.0.tgz#655eccbcc112442e83184346aa803918d9e8769a"
-  integrity sha512-2UvFDli5ncjjFwy+Bslq6Cn2TVt+pCE7DlVXKehpVstGfb+E1cdzrOgoB+4M+/V56vs15K2+M8kFRxMW3rxhnQ==
+eslint-plugin-functional@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-functional/-/eslint-plugin-functional-3.4.1.tgz#14f513f71299ae0727e59fd2ac47ca7e1dc7c67d"
+  integrity sha512-6J/++BOgQUwgWMToPFScYRBk+2fE5ljiw4M+aQTheYWRK1MImohUQh5oqzecKFVD+AlEM2rZsdhH9tlSiK17cw==
   dependencies:
     "@typescript-eslint/experimental-utils" "^4.9.1"
     array.prototype.flatmap "^1.2.4"
@@ -4618,10 +4618,10 @@ tr46@^2.0.2:
   dependencies:
     punycode "^2.1.1"
 
-trimop@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/trimop/-/trimop-0.1.5.tgz#3ea2d877076cff956e78a78cc0ca779c8dfb6038"
-  integrity sha512-DW/DupjjkVDejVOOV4qFaN5sE6uHCsArR2X3McfUDgFA5cM/JOOPT1KRSFodUtoMaLSgrMlO4xIvS8w3kfVY8Q==
+trimop@0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/trimop/-/trimop-0.1.7.tgz#06f98e35b27d7893ecb51d0b9ff064d5bb1ccd2d"
+  integrity sha512-v+iYyHyAVocZfojNccvgmIaSECQPN9L9FEBNHyMoHdPYxDJLIq3YrEjgQ83EiaFEBQbUY2qPeA7n/6doQxVR1A==
 
 ts-jest@^27.0.4:
   version "27.0.4"

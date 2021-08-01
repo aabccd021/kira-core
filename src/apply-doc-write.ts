@@ -1,9 +1,9 @@
-import { Either, Failed, foldRight, ShouldBeUnreachableFailure, Value } from 'trimop';
+import { Either, Failed, foldValue, ShouldBeUnreachableFailure, Value } from 'trimop';
 
-import { ApplyFieldWriteFailure } from './apply-field-write-failure';
 import { DateField, Doc, Field, NumberField, RefField, WriteDoc, WriteField } from './data';
+import { InvalidFieldTypeFailure } from './invalid-field-type-failure';
 
-export type ApplyDocWriteFailure = ApplyFieldWriteFailure | ShouldBeUnreachableFailure;
+export type ApplyDocWriteFailure = InvalidFieldTypeFailure | ShouldBeUnreachableFailure;
 
 export function applyFieldWrite({
   field,
@@ -32,7 +32,7 @@ export function applyFieldWrite({
       return Value(NumberField((field !== undefined ? field.value : 0) + writeField.value));
     }
     return Failed(
-      ApplyFieldWriteFailure({
+      InvalidFieldTypeFailure({
         expectedFieldTypes: ['number', 'undefined'],
         field,
       })
@@ -40,34 +40,34 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'ref') {
     if (field === undefined) {
-      return foldRight(
+      return foldValue(
         // eslint-disable-next-line no-use-before-define
-        applyDocWrite({ doc: {}, writeDoc: writeField.value.data }),
+        applyDocWrite({ doc: {}, writeDoc: writeField.snapshot.doc }),
         (newDoc) =>
           Value(
             RefField({
-              data: newDoc,
-              id: writeField.value.id,
+              doc: newDoc,
+              id: writeField.snapshot.id,
             })
           )
       );
     }
     if (field._type === 'ref') {
-      return foldRight(
+      return foldValue(
         // eslint-disable-next-line no-use-before-define
-        applyDocWrite({ doc: field.value.data, writeDoc: writeField.value.data }),
+        applyDocWrite({ doc: field.snapshot.doc, writeDoc: writeField.snapshot.doc }),
         (newDoc) =>
           Value(
             RefField({
-              data: newDoc,
-              id: writeField.value.id,
+              doc: newDoc,
+              id: writeField.snapshot.id,
             })
           )
       );
     }
 
     return Failed(
-      ApplyFieldWriteFailure({
+      InvalidFieldTypeFailure({
         expectedFieldTypes: ['ref'],
         field,
       })
@@ -85,8 +85,8 @@ export function applyDocWrite({
 }): Either<ApplyDocWriteFailure, Doc> {
   return Object.entries(writeDoc).reduce<Either<ApplyDocWriteFailure, Doc>>(
     (acc, [fieldName, writeField]) =>
-      foldRight(acc, (acc) =>
-        foldRight(applyFieldWrite({ field: doc?.[fieldName], writeField }), (field) =>
+      foldValue(acc, (acc) =>
+        foldValue(applyFieldWrite({ field: doc?.[fieldName], writeField }), (field) =>
           Value({ ...acc, [fieldName]: field })
         )
       ),
