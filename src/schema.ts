@@ -9,11 +9,11 @@ export type CountSchemaField = {
 };
 
 export type CreationTimeSchemaField = {
-  readonly type: 'creationTime';
+  readonly type: 'CreationTime';
 };
 
 export type ImageSchemaField = {
-  readonly type: 'image';
+  readonly type: 'Image';
 };
 
 export type OwnerSchemaField = {
@@ -24,11 +24,11 @@ export type OwnerSchemaField = {
 export type RefSchemaField = {
   readonly refedCol: string;
   readonly syncFields?: SchemaSyncedFields;
-  readonly type: 'ref';
+  readonly type: 'Ref';
 };
 
 export type StringSchemaField = {
-  readonly type: 'string';
+  readonly type: 'String';
 };
 
 export type SchemaField =

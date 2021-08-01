@@ -11,22 +11,16 @@ export type ColRefer = {
   readonly thisColRefers: readonly ColRefer[];
 };
 
-export type CountFieldSpec = {
-  readonly _type: 'count';
-  readonly countedCol: string;
-  readonly groupByRef: string;
-};
-
 export type CreationTimeFieldSpec = {
-  readonly _type: 'creationTime';
+  readonly _type: 'CreationTime';
 };
 
 export type ImageFieldSpec = {
-  readonly _type: 'image';
+  readonly _type: 'Image';
 };
 
 export type RefFieldSpec = {
-  readonly _type: 'ref';
+  readonly _type: 'Ref';
   readonly isOwner: boolean;
   readonly refedCol: string;
   readonly syncedFields: SyncedFields;
@@ -34,14 +28,9 @@ export type RefFieldSpec = {
 };
 
 export type StringFieldSpec = {
-  readonly _type: 'string';
+  readonly _type: 'String';
 };
 
-export type FieldSpec =
-  | CountFieldSpec
-  | CreationTimeFieldSpec
-  | ImageFieldSpec
-  | RefFieldSpec
-  | StringFieldSpec;
+export type FieldSpec = CreationTimeFieldSpec | ImageFieldSpec | RefFieldSpec | StringFieldSpec;
 
 export type Spec = Dict<Dict<FieldSpec>>;

@@ -11,11 +11,11 @@ export type BaseField = {
  *StringField
  */
 export function StringField(value: string): StringField {
-  return { _type: 'string', value };
+  return { _type: 'String', value };
 }
 
 export type StringField = {
-  readonly _type: 'string';
+  readonly _type: 'String';
   readonly value: string;
 };
 
@@ -23,11 +23,11 @@ export type StringField = {
  *NumberField
  */
 export function NumberField(value: number): NumberField {
-  return { _type: 'number', value };
+  return { _type: 'Number', value };
 }
 
 export type NumberField = {
-  readonly _type: 'number';
+  readonly _type: 'Number';
   readonly value: number;
 };
 
@@ -35,11 +35,11 @@ export type NumberField = {
  *DateField
  */
 export function DateField(value: Date): DateField {
-  return { _type: 'date', value };
+  return { _type: 'Date', value };
 }
 
 export type DateField = {
-  readonly _type: 'date';
+  readonly _type: 'Date';
   readonly value: Date;
 };
 
@@ -48,11 +48,11 @@ export type DateField = {
  */
 // eslint-disable-next-line no-use-before-define
 export function RefField(snapshot: DocSnapshot): RefField {
-  return { _type: 'ref', snapshot };
+  return { _type: 'Ref', snapshot };
 }
 
 export type RefField = {
-  readonly _type: 'ref';
+  readonly _type: 'Ref';
   // eslint-disable-next-line no-use-before-define
   readonly snapshot: DocSnapshot;
 };
@@ -63,13 +63,13 @@ export type RefField = {
 // eslint-disable-next-line no-use-before-define
 export function RefUpdateField(doc: WriteDoc): RefUpdateField {
   return {
-    _type: 'refUpdate',
+    _type: 'RefUpdate',
     doc,
   };
 }
 
 export type RefUpdateField = {
-  readonly _type: 'refUpdate';
+  readonly _type: 'RefUpdate';
   // eslint-disable-next-line no-use-before-define
   readonly doc: WriteDoc;
 };
@@ -83,13 +83,13 @@ export type ImageFieldValue = {
 
 export function ImageField(value: ImageFieldValue): ImageField {
   return {
-    _type: 'image',
+    _type: 'Image',
     value,
   };
 }
 
 export type ImageField = {
-  readonly _type: 'image';
+  readonly _type: 'Image';
   readonly value: ImageFieldValue;
 };
 
@@ -97,11 +97,11 @@ export type ImageField = {
  *CreationTimeField
  */
 export function CreationTimeField(): CreationTimeField {
-  return { _type: 'creationTime' };
+  return { _type: 'CreationTime' };
 }
 
 export type CreationTimeField = {
-  readonly _type: 'creationTime';
+  readonly _type: 'CreationTime';
 };
 
 /**
@@ -109,13 +109,13 @@ export type CreationTimeField = {
  */
 export function IncrementField(value: number): IncrementField {
   return {
-    _type: 'increment',
+    _type: 'Increment',
     value,
   };
 }
 
 export type IncrementField = {
-  readonly _type: 'increment';
+  readonly _type: 'Increment';
   readonly value: number;
 };
 

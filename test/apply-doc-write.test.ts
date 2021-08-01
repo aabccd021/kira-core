@@ -74,7 +74,7 @@ describe('applyDocWrite', () => {
     expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
       Value({
         accountCreationTime: {
-          _type: 'date',
+          _type: 'Date',
           value: expect.toSatisfy(almostEqualTimeBefore(new Date())),
         },
         age: NumberField(19),
@@ -124,7 +124,7 @@ describe('applyDocWrite', () => {
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
           InvalidFieldTypeFailure({
-            expectedFieldTypes: ['number', 'undefined'],
+            expectedFieldTypes: ['Number', 'undefined'],
             field: StringField('Sakurazaka46'),
           })
         )
@@ -145,7 +145,7 @@ describe('applyDocWrite', () => {
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
           InvalidFieldTypeFailure({
-            expectedFieldTypes: ['ref'],
+            expectedFieldTypes: ['Ref'],
             field: StringField('Keyakizaka46'),
           })
         )
@@ -162,7 +162,7 @@ describe('applyDocWrite', () => {
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
           InvalidFieldTypeFailure({
-            expectedFieldTypes: ['ref'],
+            expectedFieldTypes: ['Ref'],
             field: undefined,
           })
         )
@@ -181,7 +181,7 @@ describe('applyDocWrite', () => {
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
           InvalidFieldTypeFailure({
-            expectedFieldTypes: ['string', 'undefined'],
+            expectedFieldTypes: ['String', 'undefined'],
             field: NumberField(2020),
           })
         )
@@ -206,7 +206,7 @@ describe('applyDocWrite', () => {
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
           InvalidFieldTypeFailure({
-            expectedFieldTypes: ['ref', 'undefined'],
+            expectedFieldTypes: ['Ref', 'undefined'],
             field: StringField('rubiks'),
           })
         )
@@ -225,7 +225,7 @@ describe('applyDocWrite', () => {
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
           InvalidFieldTypeFailure({
-            expectedFieldTypes: ['number', 'undefined'],
+            expectedFieldTypes: ['Number', 'undefined'],
             field: StringField('Masumoto Kira'),
           })
         )
@@ -246,7 +246,7 @@ describe('applyDocWrite', () => {
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
           InvalidFieldTypeFailure({
-            expectedFieldTypes: ['image', 'undefined'],
+            expectedFieldTypes: ['Image', 'undefined'],
             field: StringField('Masumoto Kira'),
           })
         )
@@ -265,7 +265,7 @@ describe('applyDocWrite', () => {
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
         Failed(
           InvalidFieldTypeFailure({
-            expectedFieldTypes: ['date', 'undefined'],
+            expectedFieldTypes: ['Date', 'undefined'],
             field: StringField('Masumoto Kira'),
           })
         )

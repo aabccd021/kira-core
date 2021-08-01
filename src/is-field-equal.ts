@@ -6,24 +6,24 @@ export function isFieldEqual(
   f1: Field,
   f2: Field | undefined
 ): Either<ShouldBeUnreachableFailure, boolean> {
-  if (f1._type === 'date') {
-    return Value(f2?._type === 'date' && f1.value.getTime() === f2.value.getTime());
+  if (f1._type === 'Date') {
+    return Value(f2?._type === 'Date' && f1.value.getTime() === f2.value.getTime());
   }
 
-  if (f1._type === 'number') {
-    return Value(f2?._type === 'number' && f1.value === f2.value);
+  if (f1._type === 'Number') {
+    return Value(f2?._type === 'Number' && f1.value === f2.value);
   }
 
-  if (f1._type === 'string') {
-    return Value(f2?._type === 'string' && f1.value === f2.value);
+  if (f1._type === 'String') {
+    return Value(f2?._type === 'String' && f1.value === f2.value);
   }
 
-  if (f1._type === 'image') {
-    return Value(f2?._type === 'image' && f2.value.url === f1.value.url);
+  if (f1._type === 'Image') {
+    return Value(f2?._type === 'Image' && f2.value.url === f1.value.url);
   }
 
-  if (f1._type === 'ref') {
-    if (f2?._type !== 'ref') {
+  if (f1._type === 'Ref') {
+    if (f2?._type !== 'Ref') {
       return Value(false);
     }
 
