@@ -11,6 +11,12 @@ export type ColRefer = {
   readonly thisColRefers: readonly ColRefer[];
 };
 
+export type CountFieldSpec = {
+  readonly _type: 'Count';
+  readonly countedCol: string;
+  readonly groupByRef: string;
+};
+
 export type CreationTimeFieldSpec = {
   readonly _type: 'CreationTime';
 };
