@@ -58,18 +58,18 @@ export type RefField = {
 };
 
 /**
- * RefWriteField
+ * RefUpdateField
  */
 // eslint-disable-next-line no-use-before-define
-export function RefWriteField(doc: WriteDoc): RefWriteField {
+export function RefUpdateField(doc: WriteDoc): RefUpdateField {
   return {
-    _type: 'ref',
+    _type: 'refUpdate',
     doc,
   };
 }
 
-export type RefWriteField = {
-  readonly _type: 'ref';
+export type RefUpdateField = {
+  readonly _type: 'refUpdate';
   // eslint-disable-next-line no-use-before-define
   readonly doc: WriteDoc;
 };
@@ -137,7 +137,8 @@ export type WriteField = BaseField &
     | ImageField
     | CreationTimeField
     | IncrementField
-    | RefWriteField
+    | RefField
+    | RefUpdateField
   );
 
 export type Doc = Dict<Field>;

@@ -56,6 +56,17 @@ export function applyFieldWrite({
       })
     );
   }
+  if (writeField._type === 'ref') {
+    if (field === undefined || field._type === 'ref') {
+      return Value(writeField);
+    }
+    return Failed(
+      InvalidFieldTypeFailure({
+        expectedFieldTypes: ['ref', 'undefined'],
+        field,
+      })
+    );
+  }
   if (writeField._type === 'creationTime') {
     if (field === undefined) {
       return Value(DateField(new Date()));
@@ -78,7 +89,7 @@ export function applyFieldWrite({
       })
     );
   }
-  if (writeField._type === 'ref') {
+  if (writeField._type === 'refUpdate') {
     if (field?._type === 'ref') {
       return foldValue(
         // eslint-disable-next-line no-use-before-define

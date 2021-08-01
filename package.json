@@ -21,8 +21,7 @@
     "test": "jest --coverage --verbose",
     "latest": "yarn upgrade-interactive --latest",
     "please": "yarn tsc --noEmit && yarn lint --fix && yarn test ",
-    "release": "git pull origin main --no-edit && npm version patch && git push && open-cli https://github.com/aabccd021/kira-core/compare/main...early-dev",
-    "opun": "open-cli https://google.com"
+    "release": "git pull origin main --no-edit && npm version patch && git push && open-cli https://github.com/aabccd021/kira-core/compare/main...early-dev"
   },
   "dependencies": {
     "trimop": "0.1.7"
