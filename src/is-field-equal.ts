@@ -1,4 +1,4 @@
-import { Either, Failed, foldRight, ShouldBeUnreachableFailure, Value } from 'trimop';
+import { Either, Failed, foldValue, ShouldBeUnreachableFailure, Value } from 'trimop';
 
 import { Field } from './data';
 
@@ -29,8 +29,8 @@ export function isFieldEqual(
 
     return Object.entries(f1.snapshot.doc).reduce<Either<ShouldBeUnreachableFailure, boolean>>(
       (acc, [field3ChildName, field3Child]) =>
-        foldRight(acc, (acc) =>
-          foldRight(isFieldEqual(field3Child, f2.snapshot.doc[field3ChildName]), (isEqual) =>
+        foldValue(acc, (acc) =>
+          foldValue(isFieldEqual(field3Child, f2.snapshot.doc[field3ChildName]), (isEqual) =>
             Value(
               isEqual &&
                 acc &&
