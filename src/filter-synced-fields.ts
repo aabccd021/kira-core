@@ -48,22 +48,20 @@ export function filterSyncedFields({
     Option<Doc>,
     FilterSyncedFieldsError,
     readonly [string, true | SyncedFields]
-  >(Object.entries(syncedFields), Right(None()), (ac, [fieldName, syncFieldSpec]) => {
+  >(Object.entries(syncedFields), Right(None()), (acc, [fieldName, syncFieldSpec]) => {
     return optionFold<Either<FilterSyncedFieldsError, Option<Doc>>, Field>(
       optionFromNullable<Field>(doc[fieldName]),
-      () => Right(ac),
+      () => Right(acc),
       (field) => {
         // Copy the field if defined in the spec
         if (syncFieldSpec === true) {
+          const fieldEntry = { [fieldName]: field };
           return Right(
             Some(
               optionFold(
-                ac,
-                () => ({ [fieldName]: field }),
-                (acc) => ({
-                  ...acc,
-                  [fieldName]: field,
-                })
+                acc,
+                () => fieldEntry,
+                (acc) => ({ ...acc, ...fieldEntry })
               )
             )
           );
@@ -72,11 +70,6 @@ export function filterSyncedFields({
         if (field._type !== 'Ref') {
           return Left(FilterSyncedFieldsError(field));
         }
-        const acc = optionFold(
-          ac,
-          () => ({}),
-          (ac) => ac
-        );
         // Copy nested synced fields
         return eitherMapRight(
           filterSyncedFields({
@@ -85,19 +78,23 @@ export function filterSyncedFields({
           }),
           (syncedDoc) =>
             Right(
-              Some(
-                optionFold(
-                  syncedDoc,
-                  // If there was no copied field
-                  () => acc,
-                  (syncedDoc) => ({
-                    ...acc,
+              optionFold(
+                syncedDoc,
+                // If there was no copied field
+                () => acc,
+                (syncedDoc) => {
+                  const fieldEntry = {
                     [fieldName]: RefField({
                       doc: syncedDoc,
                       id: field.snapshot.id,
                     }),
-                  })
-                )
+                  };
+                  return optionFold(
+                    acc,
+                    () => Some(fieldEntry),
+                    (acc) => Some({ ...acc, ...fieldEntry })
+                  );
+                }
               )
             )
         );
