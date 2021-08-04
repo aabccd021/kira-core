@@ -78,13 +78,13 @@ export function filterSyncedFields({
             syncedFields: syncFieldSpec,
           }),
           (syncedDoc) =>
-            optionFold(
-              syncedDoc,
-              // If there was no copied field
-              () => Right(Some(acc)),
-              (syncedDoc) =>
-                Right(
-                  Some({
+            Right(
+              Some(
+                optionFold(
+                  syncedDoc,
+                  // If there was no copied field
+                  () => acc,
+                  (syncedDoc) => ({
                     ...acc,
                     [fieldName]: RefField({
                       doc: syncedDoc,
@@ -92,6 +92,7 @@ export function filterSyncedFields({
                     }),
                   })
                 )
+              )
             )
         );
       }
