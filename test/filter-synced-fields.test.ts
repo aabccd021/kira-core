@@ -1,7 +1,7 @@
-import { left, right } from 'trimop';
+import { Left, Right } from 'trimop';
 
 import { Doc, NumberField, RefField, StringField, SyncedFields } from '../src';
-import { filterSyncedFields, filterSyncedFieldsError } from '../src/filter-synced-fields';
+import { filterSyncedFields, FilterSyncedFieldsError } from '../src/filter-synced-fields';
 
 describe('filterSyncedFields', () => {
   it('can filter properly', () => {
@@ -43,7 +43,7 @@ describe('filterSyncedFields', () => {
       },
     };
     expect(filterSyncedFields({ doc, syncedFields })).toStrictEqual(
-      right({
+      Right({
         joinedYear: NumberField(2020),
         mentor: RefField({
           doc: {
@@ -71,8 +71,8 @@ describe('filterSyncedFields', () => {
       },
     };
     expect(filterSyncedFields({ doc, syncedFields })).toStrictEqual(
-      left(
-        filterSyncedFieldsError({ expectedFieldTypes: ['Ref'], field: StringField('Akane Moriya') })
+      Left(
+        FilterSyncedFieldsError({ expectedFieldTypes: ['Ref'], field: StringField('Akane Moriya') })
       )
     );
   });
