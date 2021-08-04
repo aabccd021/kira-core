@@ -7,7 +7,7 @@ export function isFieldEqual(f1: Field, f2: Option<Field>): boolean {
     return optionFold(
       f2,
       () => false,
-      (f2) => f2?._type === 'Date' && f1.value.getTime() === f2.value.getTime()
+      (f2) => f2._type === 'Date' && f1.value.getTime() === f2.value.getTime()
     );
   }
 
@@ -15,7 +15,7 @@ export function isFieldEqual(f1: Field, f2: Option<Field>): boolean {
     return optionFold(
       f2,
       () => false,
-      (f2) => f2?._type === 'Number' && f1.value === f2.value
+      (f2) => f2._type === 'Number' && f1.value === f2.value
     );
   }
 
@@ -23,7 +23,7 @@ export function isFieldEqual(f1: Field, f2: Option<Field>): boolean {
     return optionFold(
       f2,
       () => false,
-      (f2) => f2?._type === 'String' && f1.value === f2.value
+      (f2) => f2._type === 'String' && f1.value === f2.value
     );
   }
 
@@ -31,7 +31,7 @@ export function isFieldEqual(f1: Field, f2: Option<Field>): boolean {
     return optionFold(
       f2,
       () => false,
-      (f2) => f2?._type === 'Image' && f2.value.url === f1.value.url
+      (f2) => f2._type === 'Image' && f2.value.url === f1.value.url
     );
   }
 
@@ -40,12 +40,11 @@ export function isFieldEqual(f1: Field, f2: Option<Field>): boolean {
     f2,
     () => false,
     (f2) =>
-      f2._type !== 'Ref'
-        ? false
-        : f1.snapshot.id === f2.snapshot.id &&
-          Object.keys(f1.snapshot.doc).length === Object.keys(f2.snapshot.doc).length &&
-          Object.entries(f1.snapshot.doc).every(([field1ChildName, field1Child]) =>
-            isFieldEqual(field1Child, optionFromNullable<Field>(f2.snapshot.doc[field1ChildName]))
-          )
+      f2._type === 'Ref' &&
+      f1.snapshot.id === f2.snapshot.id &&
+      Object.keys(f1.snapshot.doc).length === Object.keys(f2.snapshot.doc).length &&
+      Object.entries(f1.snapshot.doc).every(([field1ChildName, field1Child]) =>
+        isFieldEqual(field1Child, optionFromNullable<Field>(f2.snapshot.doc[field1ChildName]))
+      )
   );
 }
