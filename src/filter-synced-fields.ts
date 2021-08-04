@@ -2,10 +2,10 @@ import {
   Either,
   eitherArrayReduce,
   eitherMapRight,
-  left,
+  Left,
   optionFold,
   optionFromNullable,
-  right,
+  Right,
 } from 'trimop';
 
 import { Doc, Field, RefField } from './data';
@@ -21,7 +21,7 @@ export type FilterSyncedFieldsError = {
   readonly field: Field | undefined;
 };
 
-export function filterSyncedFieldsError(p: FilterSyncedFieldsError): FilterSyncedFieldsError {
+export function FilterSyncedFieldsError(p: FilterSyncedFieldsError): FilterSyncedFieldsError {
   return {
     ...p,
   };
@@ -44,22 +44,22 @@ export function filterSyncedFields({
     Doc | undefined,
     FilterSyncedFieldsError,
     readonly [string, true | SyncedFields]
-  >(Object.entries(syncedFields), right(undefined), (acc, [fieldName, syncFieldSpec]) => {
+  >(Object.entries(syncedFields), Right(undefined), (acc, [fieldName, syncFieldSpec]) => {
     return optionFold(
       optionFromNullable<Field>(doc[fieldName]),
-      () => right(acc),
+      () => Right(acc),
       (field) => {
         // Copy the field if defined in the spec
         if (syncFieldSpec === true) {
-          return right({
+          return Right({
             ...acc,
             [fieldName]: field,
           });
         }
 
         if (field._type !== 'Ref') {
-          return left(
-            filterSyncedFieldsError({
+          return Left(
+            FilterSyncedFieldsError({
               expectedFieldTypes: ['Ref'],
               field,
             })
@@ -75,9 +75,9 @@ export function filterSyncedFields({
             optionFold(
               optionFromNullable(syncedDoc),
               // If there was no copied field
-              () => right(acc),
+              () => Right(acc),
               (syncedDoc) =>
-                right({
+                Right({
                   ...acc,
                   [fieldName]: RefField({
                     doc: syncedDoc,

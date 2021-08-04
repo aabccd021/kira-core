@@ -1,4 +1,4 @@
-import { Either, eitherMapRight, left, right } from 'trimop';
+import { Either, eitherMapRight, Left, Right } from 'trimop';
 
 import { DateField, Doc, Field, NumberField, RefField, WriteDoc, WriteField } from './data';
 
@@ -10,7 +10,7 @@ export type ApplyDocWriteError = {
   readonly field: Field | undefined;
 };
 
-export function applyDocWriteError(p: ApplyDocWriteError): ApplyDocWriteError {
+export function ApplyDocWriteError(p: ApplyDocWriteError): ApplyDocWriteError {
   return {
     ...p,
   };
@@ -30,10 +30,10 @@ export function applyFieldWrite({
 }): Either<ApplyDocWriteError, Field> {
   if (writeField._type === 'String') {
     if (field === undefined || field._type === 'String') {
-      return right(writeField);
+      return Right(writeField);
     }
-    return left(
-      applyDocWriteError({
+    return Left(
+      ApplyDocWriteError({
         expectedFieldTypes: ['String', 'undefined'],
         field,
       })
@@ -41,10 +41,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Number') {
     if (field === undefined || field._type === 'Number') {
-      return right(writeField);
+      return Right(writeField);
     }
-    return left(
-      applyDocWriteError({
+    return Left(
+      ApplyDocWriteError({
         expectedFieldTypes: ['Number', 'undefined'],
         field,
       })
@@ -52,10 +52,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Image') {
     if (field === undefined || field._type === 'Image') {
-      return right(writeField);
+      return Right(writeField);
     }
-    return left(
-      applyDocWriteError({
+    return Left(
+      ApplyDocWriteError({
         expectedFieldTypes: ['Image', 'undefined'],
         field,
       })
@@ -63,10 +63,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Date') {
     if (field === undefined || field._type === 'Date') {
-      return right(writeField);
+      return Right(writeField);
     }
-    return left(
-      applyDocWriteError({
+    return Left(
+      ApplyDocWriteError({
         expectedFieldTypes: ['Date', 'undefined'],
         field,
       })
@@ -74,10 +74,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Ref') {
     if (field === undefined || field._type === 'Ref') {
-      return right(writeField);
+      return Right(writeField);
     }
-    return left(
-      applyDocWriteError({
+    return Left(
+      ApplyDocWriteError({
         expectedFieldTypes: ['Ref', 'undefined'],
         field,
       })
@@ -85,10 +85,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'CreationTime') {
     if (field === undefined) {
-      return right(DateField(new Date()));
+      return Right(DateField(new Date()));
     }
-    return left(
-      applyDocWriteError({
+    return Left(
+      ApplyDocWriteError({
         expectedFieldTypes: ['undefined'],
         field,
       })
@@ -96,10 +96,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Increment') {
     if (field === undefined || field._type === 'Number') {
-      return right(NumberField((field !== undefined ? field.value : 0) + writeField.value));
+      return Right(NumberField((field !== undefined ? field.value : 0) + writeField.value));
     }
-    return left(
-      applyDocWriteError({
+    return Left(
+      ApplyDocWriteError({
         expectedFieldTypes: ['Number', 'undefined'],
         field,
       })
@@ -112,7 +112,7 @@ export function applyFieldWrite({
       // eslint-disable-next-line no-use-before-define
       applyDocWrite({ doc: field.snapshot.doc, writeDoc: writeField.doc }),
       (newDoc) =>
-        right(
+        Right(
           RefField({
             doc: newDoc,
             id: field.snapshot.id,
@@ -120,8 +120,8 @@ export function applyFieldWrite({
         )
     );
   }
-  return left(
-    applyDocWriteError({
+  return Left(
+    ApplyDocWriteError({
       expectedFieldTypes: ['Ref'],
       field,
     })
@@ -139,9 +139,9 @@ export function applyDocWrite({
     (acc, [fieldName, writeField]) =>
       eitherMapRight(acc, (acc) =>
         eitherMapRight(applyFieldWrite({ field: doc?.[fieldName], writeField }), (field) =>
-          right({ ...acc, [fieldName]: field })
+          Right({ ...acc, [fieldName]: field })
         )
       ),
-    right(doc ?? {})
+    Right(doc ?? {})
   );
 }

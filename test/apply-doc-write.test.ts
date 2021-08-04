@@ -1,6 +1,6 @@
 import 'jest-extended';
 
-import { left, right } from 'trimop';
+import { Left, Right } from 'trimop';
 
 import {
   CreationTimeField,
@@ -14,7 +14,7 @@ import {
   StringField,
   WriteDoc,
 } from '../src';
-import { applyDocWrite, applyDocWriteError } from '../src/apply-doc-write';
+import { applyDocWrite, ApplyDocWriteError } from '../src/apply-doc-write';
 import { almostEqualTimeBefore } from './util';
 
 describe('applyDocWrite', () => {
@@ -70,7 +70,7 @@ describe('applyDocWrite', () => {
       }),
     };
     expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-      right({
+      Right({
         accountCreationTime: {
           _type: 'Date',
           value: expect.toSatisfy(almostEqualTimeBefore(new Date())),
@@ -120,8 +120,8 @@ describe('applyDocWrite', () => {
         groupName: IncrementField(2),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['Number', 'undefined'],
             field: StringField('Sakurazaka46'),
           })
@@ -141,8 +141,8 @@ describe('applyDocWrite', () => {
         }),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['Ref'],
             field: StringField('Keyakizaka46'),
           })
@@ -158,8 +158,8 @@ describe('applyDocWrite', () => {
         }),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['Ref'],
             field: undefined,
           })
@@ -177,8 +177,8 @@ describe('applyDocWrite', () => {
         joinYear: StringField('2020'),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['String', 'undefined'],
             field: NumberField(2020),
           })
@@ -202,8 +202,8 @@ describe('applyDocWrite', () => {
         }),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['Ref', 'undefined'],
             field: StringField('rubiks'),
           })
@@ -221,8 +221,8 @@ describe('applyDocWrite', () => {
         name: NumberField(21),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['Number', 'undefined'],
             field: StringField('Masumoto Kira'),
           })
@@ -242,8 +242,8 @@ describe('applyDocWrite', () => {
         }),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['Image', 'undefined'],
             field: StringField('Masumoto Kira'),
           })
@@ -261,8 +261,8 @@ describe('applyDocWrite', () => {
         name: DateField(new Date()),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['Date', 'undefined'],
             field: StringField('Masumoto Kira'),
           })
@@ -280,8 +280,8 @@ describe('applyDocWrite', () => {
         name: CreationTimeField(),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        left(
-          applyDocWriteError({
+        Left(
+          ApplyDocWriteError({
             expectedFieldTypes: ['undefined'],
             field: StringField('Masumoto Kira'),
           })
@@ -295,7 +295,7 @@ describe('applyDocWrite', () => {
       name: StringField('Kira Masumoto'),
     };
     expect(applyDocWrite({ doc: undefined, writeDoc })).toStrictEqual(
-      right({
+      Right({
         name: StringField('Kira Masumoto'),
       })
     );

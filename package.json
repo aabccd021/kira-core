@@ -24,7 +24,7 @@
     "pull-request": "git pull origin main --no-edit && npm version patch && git push && yarn open-cli https://github.com/aabccd021/kira-core/compare/main...$(git branch --show-current)"
   },
   "dependencies": {
-    "trimop": "0.1.11"
+    "trimop": "0.1.13"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
