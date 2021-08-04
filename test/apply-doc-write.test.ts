@@ -1,6 +1,6 @@
 import 'jest-extended';
 
-import { Left, Right } from 'trimop';
+import { Left, None, Right, Some } from 'trimop';
 
 import {
   CreationTimeField,
@@ -19,7 +19,7 @@ import { almostEqualTimeBefore } from './util';
 
 describe('applyDocWrite', () => {
   it('correctly apply write', () => {
-    const doc: Doc = {
+    const doc: Some<Doc> = Some({
       age: NumberField(18),
       favoriteNumber: NumberField(7),
       group: RefField({
@@ -36,12 +36,18 @@ describe('applyDocWrite', () => {
         id: 'rubiks',
       }),
       latestBlogUpdate: DateField(new Date('2020-09-12T00:00:00Z')),
+      mentor: RefField({
+        doc: {
+          name: StringField('Akanen'),
+        },
+        id: 'akanen',
+      }),
       name: StringField('Kira Masumoto'),
       nickname: StringField('dorokatsu'),
       profilePicture: ImageField({
         url: 'https://sakurazaka46.com/images/14/7ef/aa0bc399d68377e1e6611efb802b4.jpg',
       }),
-    };
+    });
     const writeDoc: WriteDoc = {
       accountCreationTime: CreationTimeField(),
       age: IncrementField(1),
@@ -58,6 +64,12 @@ describe('applyDocWrite', () => {
       }),
       joinYear: NumberField(2020),
       latestBlogUpdate: DateField(new Date('2021-01-01T00:00:00Z')),
+      mentor: RefField({
+        doc: {
+          name: StringField('Moriya Akane'),
+        },
+        id: 'akanen',
+      }),
       nickname: StringField('Kirako'),
       origin: RefField({
         doc: {
@@ -97,6 +109,12 @@ describe('applyDocWrite', () => {
         }),
         joinYear: NumberField(2020),
         latestBlogUpdate: DateField(new Date('2021-01-01T00:00:00Z')),
+        mentor: RefField({
+          doc: {
+            name: StringField('Moriya Akane'),
+          },
+          id: 'akanen',
+        }),
         name: StringField('Kira Masumoto'),
         nickname: StringField('Kirako'),
         origin: RefField({
@@ -113,85 +131,64 @@ describe('applyDocWrite', () => {
   });
   describe('IncrementField', () => {
     it('fails to increment if previous value is not a NumberField', () => {
-      const doc: Doc = {
+      const doc: Some<Doc> = Some({
         groupName: StringField('Sakurazaka46'),
-      };
+      });
       const writeDoc: WriteDoc = {
         groupName: IncrementField(2),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['Number', 'undefined'],
-            field: StringField('Sakurazaka46'),
-          })
-        )
+        Left(ApplyDocWriteError(Some(StringField('Sakurazaka46'))))
       );
     });
   });
 
   describe('RefUpdateField', () => {
-    it('returns shouldBeUnreachableError if previous value is not a RefField', () => {
-      const doc: Doc = {
+    it('returns ApplyDocWriteError if previous value is not a RefField', () => {
+      const doc: Some<Doc> = Some({
         group: StringField('Keyakizaka46'),
-      };
+      });
       const writeDoc: WriteDoc = {
         group: RefUpdateField({
           name: StringField('Sakurazaka46'),
         }),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['Ref'],
-            field: StringField('Keyakizaka46'),
-          })
-        )
+        Left(ApplyDocWriteError(Some(StringField('Keyakizaka46'))))
       );
     });
 
-    it('returns shouldBeUnreachableError if previous value is undefined', () => {
-      const doc: Doc = {};
+    it('returns ApplyDocWriteError if previous value is undefined', () => {
       const writeDoc: WriteDoc = {
         group: RefUpdateField({
           name: StringField('Sakurazaka46'),
         }),
       };
-      expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['Ref'],
-            field: undefined,
-          })
-        )
+      expect(applyDocWrite({ doc: Some({}), writeDoc })).toStrictEqual(
+        Left(ApplyDocWriteError(None()))
       );
     });
   });
 
   describe('StringField', () => {
-    it('returns shouldBeUnreachableError if previous value is not StringField', () => {
-      const doc: Doc = {
+    it('returns ApplyDocWriteError if previous value is not StringField', () => {
+      const doc: Some<Doc> = Some({
         joinYear: NumberField(2020),
-      };
+      });
       const writeDoc: WriteDoc = {
         joinYear: StringField('2020'),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['String', 'undefined'],
-            field: NumberField(2020),
-          })
-        )
+        Left(ApplyDocWriteError(Some(NumberField(2020))))
       );
     });
   });
 
   describe('RefField', () => {
-    it('returns shouldBeUnreachableError if previous value is not RefField', () => {
-      const doc: Doc = {
+    it('returns ApplyDocWriteError if previous value is not RefField', () => {
+      const doc: Some<Doc> = Some({
         hobby: StringField('rubiks'),
-      };
+      });
       const writeDoc: WriteDoc = {
         hobby: RefField({
           doc: {
@@ -202,90 +199,65 @@ describe('applyDocWrite', () => {
         }),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['Ref', 'undefined'],
-            field: StringField('rubiks'),
-          })
-        )
+        Left(ApplyDocWriteError(Some(StringField('rubiks'))))
       );
     });
   });
 
   describe('NumberField', () => {
-    it('returns shouldBeUnreachableError if previous value is not NumberField', () => {
-      const doc: Doc = {
+    it('returns ApplyDocWriteError if previous value is not NumberField', () => {
+      const doc: Some<Doc> = Some({
         name: StringField('Masumoto Kira'),
-      };
+      });
       const writeDoc: WriteDoc = {
         name: NumberField(21),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['Number', 'undefined'],
-            field: StringField('Masumoto Kira'),
-          })
-        )
+        Left(ApplyDocWriteError(Some(StringField('Masumoto Kira'))))
       );
     });
   });
 
   describe('ImageField', () => {
-    it('returns shouldBeUnreachableError if previous value is not ImageField', () => {
-      const doc: Doc = {
+    it('returns ApplyDocWriteError if previous value is not ImageField', () => {
+      const doc: Some<Doc> = Some({
         name: StringField('Masumoto Kira'),
-      };
+      });
       const writeDoc: WriteDoc = {
         name: ImageField({
           url: 'https://sakurazaka46.com/images/14/7ef/aa0bc399d68377e1e6611efb802b4.jpg',
         }),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['Image', 'undefined'],
-            field: StringField('Masumoto Kira'),
-          })
-        )
+        Left(ApplyDocWriteError(Some(StringField('Masumoto Kira'))))
       );
     });
   });
 
   describe('DateField', () => {
-    it('returns shouldBeUnreachableError if previous value is not DateField', () => {
-      const doc: Doc = {
+    it('returns ApplyDocWriteError if previous value is not DateField', () => {
+      const doc: Some<Doc> = Some({
         name: StringField('Masumoto Kira'),
-      };
+      });
       const writeDoc: WriteDoc = {
         name: DateField(new Date()),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['Date', 'undefined'],
-            field: StringField('Masumoto Kira'),
-          })
-        )
+        Left(ApplyDocWriteError(Some(StringField('Masumoto Kira'))))
       );
     });
   });
 
   describe('CreationTimeField', () => {
-    it('returns shouldBeUnreachableError if previous value is not undefined', () => {
-      const doc: Doc = {
+    it('returns ApplyDocWriteError if previous value is not undefined', () => {
+      const doc: Some<Doc> = Some({
         name: StringField('Masumoto Kira'),
-      };
+      });
       const writeDoc: WriteDoc = {
         name: CreationTimeField(),
       };
       expect(applyDocWrite({ doc, writeDoc })).toStrictEqual(
-        Left(
-          ApplyDocWriteError({
-            expectedFieldTypes: ['undefined'],
-            field: StringField('Masumoto Kira'),
-          })
-        )
+        Left(ApplyDocWriteError(Some(StringField('Masumoto Kira'))))
       );
     });
   });
@@ -294,7 +266,7 @@ describe('applyDocWrite', () => {
     const writeDoc: WriteDoc = {
       name: StringField('Kira Masumoto'),
     };
-    expect(applyDocWrite({ doc: undefined, writeDoc })).toStrictEqual(
+    expect(applyDocWrite({ doc: None(), writeDoc })).toStrictEqual(
       Right({
         name: StringField('Kira Masumoto'),
       })
