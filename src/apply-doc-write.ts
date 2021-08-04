@@ -1,23 +1,39 @@
-import { Either, Failed, foldValue, ShouldBeUnreachableFailure, Value } from 'trimop';
+import { Either, eitherMapRight, left, right } from 'trimop';
 
 import { DateField, Doc, Field, NumberField, RefField, WriteDoc, WriteField } from './data';
-import { InvalidFieldTypeFailure } from './invalid-field-type-failure';
 
-export type ApplyDocWriteFailure = InvalidFieldTypeFailure | ShouldBeUnreachableFailure;
+/**
+ * ApplyDocWriteError
+ */
+export type ApplyDocWriteError = {
+  readonly expectedFieldTypes: readonly (Field['_type'] | 'undefined')[];
+  readonly field: Field | undefined;
+};
 
+export function applyDocWriteError(p: ApplyDocWriteError): ApplyDocWriteError {
+  return {
+    ...p,
+  };
+}
+
+/**
+ *
+ * @param param0
+ * @returns
+ */
 export function applyFieldWrite({
   field,
   writeField,
 }: {
   readonly field: Field | undefined;
   readonly writeField: WriteField;
-}): Either<ApplyDocWriteFailure, Field> {
+}): Either<ApplyDocWriteError, Field> {
   if (writeField._type === 'String') {
     if (field === undefined || field._type === 'String') {
-      return Value(writeField);
+      return right(writeField);
     }
-    return Failed(
-      InvalidFieldTypeFailure({
+    return left(
+      applyDocWriteError({
         expectedFieldTypes: ['String', 'undefined'],
         field,
       })
@@ -25,10 +41,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Number') {
     if (field === undefined || field._type === 'Number') {
-      return Value(writeField);
+      return right(writeField);
     }
-    return Failed(
-      InvalidFieldTypeFailure({
+    return left(
+      applyDocWriteError({
         expectedFieldTypes: ['Number', 'undefined'],
         field,
       })
@@ -36,10 +52,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Image') {
     if (field === undefined || field._type === 'Image') {
-      return Value(writeField);
+      return right(writeField);
     }
-    return Failed(
-      InvalidFieldTypeFailure({
+    return left(
+      applyDocWriteError({
         expectedFieldTypes: ['Image', 'undefined'],
         field,
       })
@@ -47,10 +63,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Date') {
     if (field === undefined || field._type === 'Date') {
-      return Value(writeField);
+      return right(writeField);
     }
-    return Failed(
-      InvalidFieldTypeFailure({
+    return left(
+      applyDocWriteError({
         expectedFieldTypes: ['Date', 'undefined'],
         field,
       })
@@ -58,10 +74,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Ref') {
     if (field === undefined || field._type === 'Ref') {
-      return Value(writeField);
+      return right(writeField);
     }
-    return Failed(
-      InvalidFieldTypeFailure({
+    return left(
+      applyDocWriteError({
         expectedFieldTypes: ['Ref', 'undefined'],
         field,
       })
@@ -69,10 +85,10 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'CreationTime') {
     if (field === undefined) {
-      return Value(DateField(new Date()));
+      return right(DateField(new Date()));
     }
-    return Failed(
-      InvalidFieldTypeFailure({
+    return left(
+      applyDocWriteError({
         expectedFieldTypes: ['undefined'],
         field,
       })
@@ -80,37 +96,36 @@ export function applyFieldWrite({
   }
   if (writeField._type === 'Increment') {
     if (field === undefined || field._type === 'Number') {
-      return Value(NumberField((field !== undefined ? field.value : 0) + writeField.value));
+      return right(NumberField((field !== undefined ? field.value : 0) + writeField.value));
     }
-    return Failed(
-      InvalidFieldTypeFailure({
+    return left(
+      applyDocWriteError({
         expectedFieldTypes: ['Number', 'undefined'],
         field,
       })
     );
   }
-  if (writeField._type === 'RefUpdate') {
-    if (field?._type === 'Ref') {
-      return foldValue(
-        // eslint-disable-next-line no-use-before-define
-        applyDocWrite({ doc: field.snapshot.doc, writeDoc: writeField.doc }),
-        (newDoc) =>
-          Value(
-            RefField({
-              doc: newDoc,
-              id: field.snapshot.id,
-            })
-          )
-      );
-    }
-    return Failed(
-      InvalidFieldTypeFailure({
-        expectedFieldTypes: ['Ref'],
-        field,
-      })
+  // writeField._type === 'RefUpdate'
+
+  if (field?._type === 'Ref') {
+    return eitherMapRight(
+      // eslint-disable-next-line no-use-before-define
+      applyDocWrite({ doc: field.snapshot.doc, writeDoc: writeField.doc }),
+      (newDoc) =>
+        right(
+          RefField({
+            doc: newDoc,
+            id: field.snapshot.id,
+          })
+        )
     );
   }
-  return Failed(ShouldBeUnreachableFailure(writeField));
+  return left(
+    applyDocWriteError({
+      expectedFieldTypes: ['Ref'],
+      field,
+    })
+  );
 }
 
 export function applyDocWrite({
@@ -119,14 +134,14 @@ export function applyDocWrite({
 }: {
   readonly doc: Doc | undefined;
   readonly writeDoc: WriteDoc;
-}): Either<ApplyDocWriteFailure, Doc> {
-  return Object.entries(writeDoc).reduce<Either<ApplyDocWriteFailure, Doc>>(
+}): Either<ApplyDocWriteError, Doc> {
+  return Object.entries(writeDoc).reduce<Either<ApplyDocWriteError, Doc>>(
     (acc, [fieldName, writeField]) =>
-      foldValue(acc, (acc) =>
-        foldValue(applyFieldWrite({ field: doc?.[fieldName], writeField }), (field) =>
-          Value({ ...acc, [fieldName]: field })
+      eitherMapRight(acc, (acc) =>
+        eitherMapRight(applyFieldWrite({ field: doc?.[fieldName], writeField }), (field) =>
+          right({ ...acc, [fieldName]: field })
         )
       ),
-    Value(doc ?? {})
+    right(doc ?? {})
   );
 }

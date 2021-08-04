@@ -4068,7 +4068,7 @@ open-cli@^7.0.0:
     open "^8.2.0"
     tempy "^1.0.1"
 
-open@^8.2.0, open@^8.2.1:
+open@^8.2.0:
   version "8.2.1"
   resolved "https://registry.yarnpkg.com/open/-/open-8.2.1.tgz#82de42da0ccbf429bc12d099dad2e0975e14e8af"
   integrity sha512-rXILpcQlkF/QuFez2BJDf3GsqpjGKbkUUToAIGo9A0Q6ZkoSGogZJulrUdwRkrAsoQvoZsrjCYt8+zblOk7JQQ==
@@ -5008,10 +5008,10 @@ trim-newlines@^4.0.2:
   resolved "https://registry.yarnpkg.com/trim-newlines/-/trim-newlines-4.0.2.tgz#d6aaaf6a0df1b4b536d183879a6b939489808c7c"
   integrity sha512-GJtWyq9InR/2HRiLZgpIKv+ufIKrVrvjQWEj7PxAXNc5dwbNJkqhAUoAGgzRmULAnoOM5EIpveYd3J2VeSAIew==
 
-trimop@0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/trimop/-/trimop-0.1.7.tgz#06f98e35b27d7893ecb51d0b9ff064d5bb1ccd2d"
-  integrity sha512-v+iYyHyAVocZfojNccvgmIaSECQPN9L9FEBNHyMoHdPYxDJLIq3YrEjgQ83EiaFEBQbUY2qPeA7n/6doQxVR1A==
+trimop@0.1.11:
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/trimop/-/trimop-0.1.11.tgz#06594b665e4b9ea94b1ce5c229060ba5deb1e398"
+  integrity sha512-n+S/PpiR21rlP/DiDnHQkTdc3ubNvdlB3wyd8om7i2sYOYVIaiQ2/lY4AAGZtALRXE7H3ZCfGrXI1PK2mJEDOA==
 
 ts-jest@^27.0.4:
   version "27.0.4"

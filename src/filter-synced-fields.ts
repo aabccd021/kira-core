@@ -1,8 +1,31 @@
-import { Either, Failed, foldValue, isDefined, Value } from 'trimop';
+import {
+  Either,
+  eitherArrayReduce,
+  eitherMapRight,
+  left,
+  optionFold,
+  optionFromNullable,
+  right,
+} from 'trimop';
 
-import { Doc, RefField } from './data';
-import { InvalidFieldTypeFailure } from './invalid-field-type-failure';
+import { Doc, Field, RefField } from './data';
 import { SyncedFields } from './spec';
+
+// TODO: use option
+
+/**
+ * FilterSyncedFieldInvalidFieldTypeError
+ */
+export type FilterSyncedFieldsError = {
+  readonly expectedFieldTypes: readonly (Field['_type'] | 'undefined')[];
+  readonly field: Field | undefined;
+};
+
+export function filterSyncedFieldsError(p: FilterSyncedFieldsError): FilterSyncedFieldsError {
+  return {
+    ...p,
+  };
+}
 
 /**
  * Filter synced fields.
@@ -16,52 +39,54 @@ export function filterSyncedFields({
 }: {
   readonly doc: Doc;
   readonly syncedFields: SyncedFields;
-}): Either<InvalidFieldTypeFailure, Doc | undefined> {
-  return Object.entries(syncedFields).reduce<Either<InvalidFieldTypeFailure, Doc | undefined>>(
-    (acc, [fieldName, syncFieldSpec]) =>
-      foldValue(acc, (acc) => {
-        const field = doc[fieldName];
-        if (isDefined(field)) {
-          // Copy the field if defined in the spec
-          if (syncFieldSpec === true) {
-            return Value({
-              ...acc,
-              [fieldName]: field,
-            });
-          }
+}): Either<FilterSyncedFieldsError, Doc | undefined> {
+  return eitherArrayReduce<
+    Doc | undefined,
+    FilterSyncedFieldsError,
+    readonly [string, true | SyncedFields]
+  >(Object.entries(syncedFields), right(undefined), (acc, [fieldName, syncFieldSpec]) => {
+    return optionFold(
+      optionFromNullable<Field>(doc[fieldName]),
+      () => right(acc),
+      (field) => {
+        // Copy the field if defined in the spec
+        if (syncFieldSpec === true) {
+          return right({
+            ...acc,
+            [fieldName]: field,
+          });
+        }
 
-          if (field._type !== 'Ref') {
-            return Failed(
-              InvalidFieldTypeFailure({
-                expectedFieldTypes: ['Ref'],
-                field,
-              })
-            );
-          }
-          // Copy nested synced fields
-          return foldValue(
-            filterSyncedFields({
-              doc: field.snapshot.doc,
-              syncedFields: syncFieldSpec,
-            }),
-            (syncedDoc) => {
-              // If there was no copied field
-              if (!isDefined(syncedDoc)) {
-                return Value(acc);
-              }
-              return Value({
-                ...acc,
-                [fieldName]: RefField({
-                  doc: syncedDoc,
-                  id: field.snapshot.id,
-                }),
-              });
-            }
+        if (field._type !== 'Ref') {
+          return left(
+            filterSyncedFieldsError({
+              expectedFieldTypes: ['Ref'],
+              field,
+            })
           );
         }
-        // If synced field does not exists, do nothing
-        return Value(acc);
-      }),
-    Value(undefined)
-  );
+        // Copy nested synced fields
+        return eitherMapRight(
+          filterSyncedFields({
+            doc: field.snapshot.doc,
+            syncedFields: syncFieldSpec,
+          }),
+          (syncedDoc) =>
+            optionFold(
+              optionFromNullable(syncedDoc),
+              // If there was no copied field
+              () => right(acc),
+              (syncedDoc) =>
+                right({
+                  ...acc,
+                  [fieldName]: RefField({
+                    doc: syncedDoc,
+                    id: field.snapshot.id,
+                  }),
+                })
+            )
+        );
+      }
+    );
+  });
 }

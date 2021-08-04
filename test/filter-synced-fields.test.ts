@@ -1,14 +1,7 @@
-import { Failed, Value } from 'trimop';
+import { left, right } from 'trimop';
 
-import {
-  Doc,
-  InvalidFieldTypeFailure,
-  NumberField,
-  RefField,
-  StringField,
-  SyncedFields,
-} from '../src';
-import { filterSyncedFields } from '../src/filter-synced-fields';
+import { Doc, NumberField, RefField, StringField, SyncedFields } from '../src';
+import { filterSyncedFields, filterSyncedFieldsError } from '../src/filter-synced-fields';
 
 describe('filterSyncedFields', () => {
   it('can filter properly', () => {
@@ -50,7 +43,7 @@ describe('filterSyncedFields', () => {
       },
     };
     expect(filterSyncedFields({ doc, syncedFields })).toStrictEqual(
-      Value({
+      right({
         joinedYear: NumberField(2020),
         mentor: RefField({
           doc: {
@@ -68,7 +61,7 @@ describe('filterSyncedFields', () => {
     );
   });
 
-  it('returns InvalidFieldTypeFailure if given other than refField on nested sync', () => {
+  it('returns filterSyncedFieldsError if given other than refField on nested sync', () => {
     const doc: Doc = {
       mentor: StringField('Akane Moriya'),
     };
@@ -78,8 +71,8 @@ describe('filterSyncedFields', () => {
       },
     };
     expect(filterSyncedFields({ doc, syncedFields })).toStrictEqual(
-      Failed(
-        InvalidFieldTypeFailure({ expectedFieldTypes: ['Ref'], field: StringField('Akane Moriya') })
+      left(
+        filterSyncedFieldsError({ expectedFieldTypes: ['Ref'], field: StringField('Akane Moriya') })
       )
     );
   });
