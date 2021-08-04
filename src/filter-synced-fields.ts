@@ -53,24 +53,30 @@ export function filterSyncedFields({
       optionFromNullable<Field>(doc[fieldName]),
       () => Right(ac),
       (field) => {
-        const acc = optionFold(
-          ac,
-          () => ({}),
-          (ac) => ac
-        );
         // Copy the field if defined in the spec
         if (syncFieldSpec === true) {
           return Right(
-            Some({
-              ...acc,
-              [fieldName]: field,
-            })
+            Some(
+              optionFold(
+                ac,
+                () => ({ [fieldName]: field }),
+                (acc) => ({
+                  ...acc,
+                  [fieldName]: field,
+                })
+              )
+            )
           );
         }
 
         if (field._type !== 'Ref') {
           return Left(FilterSyncedFieldsError(field));
         }
+        const acc = optionFold(
+          ac,
+          () => ({}),
+          (ac) => ac
+        );
         // Copy nested synced fields
         return eitherMapRight(
           filterSyncedFields({
