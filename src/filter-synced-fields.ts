@@ -3,9 +3,12 @@ import {
   eitherArrayReduce,
   eitherMapRight,
   Left,
+  None,
+  Option,
   optionFold,
   optionFromNullable,
   Right,
+  Some,
 } from 'trimop';
 
 import { Doc, Field, RefField } from './data';
@@ -18,10 +21,10 @@ import { SyncedFields } from './spec';
  */
 export type FilterSyncedFieldsError = {
   readonly _errorType: 'FilterSyncedFieldsError';
-  readonly field: Field | undefined;
+  readonly field: Field;
 };
 
-export function FilterSyncedFieldsError(field: Field | undefined): FilterSyncedFieldsError {
+export function FilterSyncedFieldsError(field: Field): FilterSyncedFieldsError {
   return {
     _errorType: 'FilterSyncedFieldsError',
     field,
@@ -40,22 +43,29 @@ export function filterSyncedFields({
 }: {
   readonly doc: Doc;
   readonly syncedFields: SyncedFields;
-}): Either<FilterSyncedFieldsError, Doc | undefined> {
+}): Either<FilterSyncedFieldsError, Option<Doc>> {
   return eitherArrayReduce<
-    Doc | undefined,
+    Option<Doc>,
     FilterSyncedFieldsError,
     readonly [string, true | SyncedFields]
-  >(Object.entries(syncedFields), Right(undefined), (acc, [fieldName, syncFieldSpec]) => {
-    return optionFold(
+  >(Object.entries(syncedFields), Right(None()), (ac, [fieldName, syncFieldSpec]) => {
+    return optionFold<Either<FilterSyncedFieldsError, Option<Doc>>, Field>(
       optionFromNullable<Field>(doc[fieldName]),
-      () => Right(acc),
+      () => Right(ac),
       (field) => {
+        const acc = optionFold(
+          ac,
+          () => ({}),
+          (ac) => ac
+        );
         // Copy the field if defined in the spec
         if (syncFieldSpec === true) {
-          return Right({
-            ...acc,
-            [fieldName]: field,
-          });
+          return Right(
+            Some({
+              ...acc,
+              [fieldName]: field,
+            })
+          );
         }
 
         if (field._type !== 'Ref') {
@@ -69,17 +79,19 @@ export function filterSyncedFields({
           }),
           (syncedDoc) =>
             optionFold(
-              optionFromNullable(syncedDoc),
+              syncedDoc,
               // If there was no copied field
-              () => Right(acc),
+              () => Right(Some(acc)),
               (syncedDoc) =>
-                Right({
-                  ...acc,
-                  [fieldName]: RefField({
-                    doc: syncedDoc,
-                    id: field.snapshot.id,
-                  }),
-                })
+                Right(
+                  Some({
+                    ...acc,
+                    [fieldName]: RefField({
+                      doc: syncedDoc,
+                      id: field.snapshot.id,
+                    }),
+                  })
+                )
             )
         );
       }
