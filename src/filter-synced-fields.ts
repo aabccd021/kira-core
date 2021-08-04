@@ -17,13 +17,14 @@ import { SyncedFields } from './spec';
  * FilterSyncedFieldInvalidFieldTypeError
  */
 export type FilterSyncedFieldsError = {
-  readonly expectedFieldTypes: readonly (Field['_type'] | 'undefined')[];
+  readonly _errorType: 'FilterSyncedFieldsError';
   readonly field: Field | undefined;
 };
 
-export function FilterSyncedFieldsError(p: FilterSyncedFieldsError): FilterSyncedFieldsError {
+export function FilterSyncedFieldsError(field: Field | undefined): FilterSyncedFieldsError {
   return {
-    ...p,
+    _errorType: 'FilterSyncedFieldsError',
+    field,
   };
 }
 
@@ -58,12 +59,7 @@ export function filterSyncedFields({
         }
 
         if (field._type !== 'Ref') {
-          return Left(
-            FilterSyncedFieldsError({
-              expectedFieldTypes: ['Ref'],
-              field,
-            })
-          );
+          return Left(FilterSyncedFieldsError(field));
         }
         // Copy nested synced fields
         return eitherMapRight(

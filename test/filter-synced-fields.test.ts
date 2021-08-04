@@ -71,9 +71,7 @@ describe('filterSyncedFields', () => {
       },
     };
     expect(filterSyncedFields({ doc, syncedFields })).toStrictEqual(
-      Left(
-        FilterSyncedFieldsError({ expectedFieldTypes: ['Ref'], field: StringField('Akane Moriya') })
-      )
+      Left(FilterSyncedFieldsError(StringField('Akane Moriya')))
     );
   });
 });

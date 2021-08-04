@@ -158,7 +158,7 @@ describe('applyDocWrite', () => {
       );
     });
 
-    it('returns ApplyDocWriteError if previous value is undefined', () => {
+    it('returns ApplyDocWriteError if previous value is none', () => {
       const writeDoc: WriteDoc = {
         group: RefUpdateField({
           name: StringField('Sakurazaka46'),
@@ -249,7 +249,7 @@ describe('applyDocWrite', () => {
   });
 
   describe('CreationTimeField', () => {
-    it('returns ApplyDocWriteError if previous value is not undefined', () => {
+    it('returns ApplyDocWriteError if previous value is not none', () => {
       const doc: Some<Doc> = Some({
         name: StringField('Masumoto Kira'),
       });
