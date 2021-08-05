@@ -17,12 +17,11 @@ import { DateField, Doc, Field, NumberField, RefField, WriteDoc, WriteField } fr
  * ApplyDocWriteError
  */
 export type ApplyDocWriteError = {
-  readonly _errorType: 'ApplyDocWrite';
   readonly field: Option<Field>;
 };
 
 export function ApplyDocWriteError(field: Option<Field>): ApplyDocWriteError {
-  return { _errorType: 'ApplyDocWrite', field };
+  return { field };
 }
 
 /**

@@ -20,13 +20,11 @@ import { SyncedFields } from './spec';
  * FilterSyncedFieldInvalidFieldTypeError
  */
 export type FilterSyncedFieldsError = {
-  readonly _errorType: 'FilterSyncedFieldsError';
   readonly field: Field;
 };
 
 export function FilterSyncedFieldsError(field: Field): FilterSyncedFieldsError {
   return {
-    _errorType: 'FilterSyncedFieldsError',
     field,
   };
 }
@@ -82,19 +80,25 @@ export function filterSyncedFields({
                 syncedDoc,
                 // If there was no copied field
                 () => acc,
-                (syncedDoc) => {
-                  const fieldEntry = {
-                    [fieldName]: RefField({
-                      doc: syncedDoc,
-                      id: field.snapshot.id,
-                    }),
-                  };
-                  return optionFold(
+                (syncedDoc) =>
+                  optionFold(
                     acc,
-                    () => Some(fieldEntry),
-                    (acc) => Some({ ...acc, ...fieldEntry })
-                  );
-                }
+                    () =>
+                      Some({
+                        [fieldName]: RefField({
+                          doc: syncedDoc,
+                          id: field.snapshot.id,
+                        }),
+                      }),
+                    (acc) =>
+                      Some({
+                        ...acc,
+                        [fieldName]: RefField({
+                          doc: syncedDoc,
+                          id: field.snapshot.id,
+                        }),
+                      })
+                  )
               )
             )
         );
