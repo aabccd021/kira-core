@@ -3,9 +3,12 @@ import {
   eitherArrayReduce,
   eitherMapRight,
   Left,
+  None,
+  Option,
   optionFold,
   optionFromNullable,
   Right,
+  Some,
 } from 'trimop';
 
 import { Doc, Field, RefField } from './data';
@@ -17,13 +20,12 @@ import { SyncedFields } from './spec';
  * FilterSyncedFieldInvalidFieldTypeError
  */
 export type FilterSyncedFieldsError = {
-  readonly expectedFieldTypes: readonly (Field['_type'] | 'undefined')[];
-  readonly field: Field | undefined;
+  readonly field: Field;
 };
 
-export function FilterSyncedFieldsError(p: FilterSyncedFieldsError): FilterSyncedFieldsError {
+export function FilterSyncedFieldsError(field: Field): FilterSyncedFieldsError {
   return {
-    ...p,
+    field,
   };
 }
 
@@ -39,31 +41,32 @@ export function filterSyncedFields({
 }: {
   readonly doc: Doc;
   readonly syncedFields: SyncedFields;
-}): Either<FilterSyncedFieldsError, Doc | undefined> {
+}): Either<FilterSyncedFieldsError, Option<Doc>> {
   return eitherArrayReduce<
-    Doc | undefined,
+    Option<Doc>,
     FilterSyncedFieldsError,
     readonly [string, true | SyncedFields]
-  >(Object.entries(syncedFields), Right(undefined), (acc, [fieldName, syncFieldSpec]) => {
-    return optionFold(
+  >(Object.entries(syncedFields), Right(None()), (acc, [fieldName, syncFieldSpec]) => {
+    return optionFold<Either<FilterSyncedFieldsError, Option<Doc>>, Field>(
       optionFromNullable<Field>(doc[fieldName]),
       () => Right(acc),
       (field) => {
         // Copy the field if defined in the spec
         if (syncFieldSpec === true) {
-          return Right({
-            ...acc,
-            [fieldName]: field,
-          });
+          const fieldEntry = { [fieldName]: field };
+          return Right(
+            Some(
+              optionFold(
+                acc,
+                () => fieldEntry,
+                (acc) => ({ ...acc, ...fieldEntry })
+              )
+            )
+          );
         }
 
         if (field._type !== 'Ref') {
-          return Left(
-            FilterSyncedFieldsError({
-              expectedFieldTypes: ['Ref'],
-              field,
-            })
-          );
+          return Left(FilterSyncedFieldsError(field));
         }
         // Copy nested synced fields
         return eitherMapRight(
@@ -72,18 +75,31 @@ export function filterSyncedFields({
             syncedFields: syncFieldSpec,
           }),
           (syncedDoc) =>
-            optionFold(
-              optionFromNullable(syncedDoc),
-              // If there was no copied field
-              () => Right(acc),
-              (syncedDoc) =>
-                Right({
-                  ...acc,
-                  [fieldName]: RefField({
-                    doc: syncedDoc,
-                    id: field.snapshot.id,
-                  }),
-                })
+            Right(
+              optionFold(
+                syncedDoc,
+                // If there was no copied field
+                () => acc,
+                (syncedDoc) =>
+                  optionFold(
+                    acc,
+                    () =>
+                      Some({
+                        [fieldName]: RefField({
+                          doc: syncedDoc,
+                          id: field.snapshot.id,
+                        }),
+                      }),
+                    (acc) =>
+                      Some({
+                        ...acc,
+                        [fieldName]: RefField({
+                          doc: syncedDoc,
+                          id: field.snapshot.id,
+                        }),
+                      })
+                  )
+              )
             )
         );
       }
